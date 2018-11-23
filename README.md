@@ -1,4 +1,9 @@
-# sap_server
+#sap_server
+
+*Recommend: Python 3.6*
+
+#Installation
+
 First install virtualenv if you haven't `pip install virtualenv`
 
 Next, generate virtualenv `virtualenv venv`
@@ -9,6 +14,13 @@ Last install dependencies run `pip install -r requirements.txt`
 
 If MySQL doesn't install work `pip install --only-binary :all: mysqlclient`
 
+Copy and rename `.envexample` file to `.env` and provide proper settings:
+
+`cp .envexample .env`
+
+Launch server:
+
+`python manage.py runserver`
 #Test RPC call
 ```
 curl -X POST \
