@@ -1,5 +1,5 @@
 # .gitignore
-_pycache_
+sap/_pycache_
 venv
 env
 .pytest_cache
