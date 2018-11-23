@@ -1,0 +1,6 @@
+# .gitignore
+_pycache_
+venv
+env
+.pytest_cache
+.coverage
