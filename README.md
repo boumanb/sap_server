@@ -1,7 +1,7 @@
 #sap_server
 
-*Recommend: Python 3.6*
-            *PostgresSQL 11.1*
+*Recommend: Python 3.6
+            PostgresSQL 11.1
 
 #Installation
 
