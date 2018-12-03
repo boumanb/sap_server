@@ -1,5 +1,0 @@
-DBNAME=sap_server
-DBUSER=sap_server
-DBPASS=asd123
-DBHOST=localhost
-DBPORT=3306
