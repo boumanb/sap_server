@@ -1,0 +1,5 @@
+DBNAME=sap_database
+DBUSER=sap_user
+DBPASS=PASSWORD
+DBHOST=localhost
+DBPORT=5432
