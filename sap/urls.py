@@ -21,4 +21,5 @@ from modernrpc.views import RPCEntryPoint
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^rpc/', RPCEntryPoint.as_view()),
+    url(r'^rpc-doc/', RPCEntryPoint.as_view(enable_doc=True, enable_rpc=False)),
 ]
