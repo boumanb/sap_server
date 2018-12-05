@@ -69,5 +69,5 @@ class Collage(models.Model):
 class Attendance(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    phone = models.Boolean()
-    card = models.Boolean()
+    phone = models.BooleanField(default=True)
+    card = models.BooleanField(default=True)
