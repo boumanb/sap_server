@@ -1,9 +1,9 @@
-#sap_server
+# sap_server
 
 *Recommend: Python 3.6*
             *PostgresSQL 11.1*
 
-#Installation
+# Installation
 
 First install virtualenv if you haven't `pip install virtualenv`
 
@@ -22,7 +22,7 @@ Copy and rename `.envexample` file to `.env` and provide proper settings:
 Launch server:
 
 `python manage.py runserver`
-#Test RPC call
+# Test RPC call
 ```
 curl -X POST \
 http://127.0.0.1:8000/rpc/ \
