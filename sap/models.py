@@ -67,9 +67,9 @@ class Room(models.Model):
 
 
 class Collage(models.Model):
-    day = models.DateField()
-    begin_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    day = models.DateField(u'Date')
+    begin_time = models.TimeField(u'Begin Time')
+    end_time = models.TimeField(u'End Time')
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
