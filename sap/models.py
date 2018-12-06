@@ -22,13 +22,11 @@ class Student(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
     def attend(self):
         # Marks attendace for the student. The booleans default to False.
         att = Attendance(student=self)
         att.save()
-        
-        
+
     def check_token_valid(self):
         if self.api_token_valid_till > timezone.now():
             return True
@@ -55,8 +53,7 @@ class Course(models.Model):
     attendees = models.ManyToManyField(Student)
 
     def make_collages(self, room, dates, ):
-
-        #Generates the collages tables.
+        # Generates the collages tables.
         return 0
 
 
@@ -82,4 +79,3 @@ class Attendance(models.Model):
     card_check = models.BooleanField(default=False)
     phone = models.BooleanField(default=False)
     card = models.BooleanField(default=False)
-
