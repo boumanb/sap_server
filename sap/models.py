@@ -11,6 +11,7 @@ class Device(models.Model):
 class Student(models.Model):
     name = models.CharField(max_length=200)
     student_nr = models.CharField(max_length=200, null=True)
+    secret_totp = models.CharField(max_length=200, null=True)
     card_uid = models.IntegerField()
     email = models.CharField(max_length=200, null=True)
     device = models.OneToOneField(

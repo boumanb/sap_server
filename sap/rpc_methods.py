@@ -1,5 +1,6 @@
 import datetime
 
+import pyotp
 from django.core.mail import send_mail
 from django.utils import timezone
 
@@ -61,7 +62,6 @@ def register(student_nr):
     """
 
     q = Student.objects.filter(student_nr=student_nr)
-
     if not q:
         r = {
             "success": False
@@ -69,9 +69,16 @@ def register(student_nr):
         return r
     else:
         student = q[0]
+        secret = pyotp.random_base32()
+        student.secret_totp = secret
+        student.save()
+        totp = pyotp.TOTP(secret)
+
         send_mail(
             'Confirm device registration',
-            'Here is the message.',
+            'Here is the message.'
+            '\n'
+            'TOTP: ' + totp.now() + '',
             'nsasapattendance@gmail.com',
             [student.email],
             fail_silently=False,
