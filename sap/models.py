@@ -29,10 +29,10 @@ class Teacher (models.Model):
 
 class Course(models.Model):
     name = models.CharField(max_length=200)
-    teacher = models.ManyToManyField(Teacher, on_delete=models.SET_NULL, null=True)
+    teacher = models.ManyToManyField(Teacher)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    attendees = models.ManyToManyField(Student, on_delete=models.SET_NULL, null=True)
+    attendees = models.ManyToManyField(Student)
 
 
 class Room(models.Model):
