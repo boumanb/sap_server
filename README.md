@@ -13,8 +13,6 @@ Then, activate virtualenv `source venv/Scripts/activate` and `deactivate` to dea
 
 Last install dependencies run `pip install -r requirements.txt`
 
-If MySQL doesn't install work `pip install --only-binary :all: mysqlclient`
-
 Copy and rename `.envexample` file to `.env` and provide proper settings:
 
 `cp .envexample .env`

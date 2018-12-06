@@ -10,6 +10,7 @@ class Device(models.Model):
 
 class Student(models.Model):
     name = models.CharField(max_length=200)
+    student_nr = models.CharField(max_length=200, null=True)
     card_uid = models.IntegerField()
     email = models.CharField(max_length=200, null=True)
     device = models.OneToOneField(
@@ -67,9 +68,9 @@ class Room(models.Model):
 
 
 class Collage(models.Model):
-    day = models.DateField()
-    begin_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    day = models.DateField(null=True)
+    begin_time = models.DateTimeField(null=True)
+    end_time = models.DateTimeField(null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
