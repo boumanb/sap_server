@@ -1,4 +1,6 @@
 import datetime
+
+from django.core.mail import send_mail
 from django.utils import timezone
 
 from modernrpc.auth import set_authentication_predicate
@@ -21,6 +23,7 @@ def echo(text):
     return text
 
 
+@rpc_method
 def login(installation_uid):
     """
     Returns a API token for further API usage
@@ -47,4 +50,33 @@ def login(installation_uid):
     }
 
     return r
-  
+
+
+@rpc_method
+def register(student_nr):
+    """
+    Generates and sends TOTP to student mail.
+    :param student_nr: student number
+    :return: succes boolean
+    """
+
+    q = Student.objects.filter(student_nr=student_nr)
+
+    if not q:
+        r = {
+            "success": False
+        }
+        return r
+    else:
+        student = q[0]
+        send_mail(
+            'Confirm device registration',
+            'Here is the message.',
+            'nsasapattendance@gmail.com',
+            [student.email],
+            fail_silently=False,
+        )
+        r = {
+            "success": True
+        }
+        return r
