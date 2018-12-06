@@ -18,6 +18,10 @@ class Student(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def attend(self):
+        att = Attendance(student=self, phone_check=True, card_check=True)
+        att.save()
+
 
 class Teacher (models.Model):
     name = models.CharField(max_length=200)
