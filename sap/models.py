@@ -42,7 +42,8 @@ class Course(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     attendees = models.ManyToManyField(Student)
 
-    def make_collages(self):
+    def make_collages(self, room, dates, ):
+
         #Generates the collages tables.
         return 0
 
@@ -55,6 +56,7 @@ class Room(models.Model):
 
 
 class Collage(models.Model):
+    day = models.DateField()
     begin_time = models.DateTimeField()
     end_time = models.DateTimeField()
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
