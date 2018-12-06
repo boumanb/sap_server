@@ -19,7 +19,8 @@ class Student(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def attend(self):
-        att = Attendance(student=self, phone_check=True, card_check=True)
+        # Marks attendace for the student. The booleans default to False.
+        att = Attendance(student=self)
         att.save()
 
 
@@ -30,6 +31,9 @@ class Teacher (models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def attend_student(self, student):
+        att = Attendance(student=student, phone_check=True, card_check=True)
+
 
 class Course(models.Model):
     name = models.CharField(max_length=200)
@@ -37,6 +41,10 @@ class Course(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     attendees = models.ManyToManyField(Student)
+
+    def make_collages(self):
+        #Generates the collages tables.
+        return 0
 
 
 class Room(models.Model):
