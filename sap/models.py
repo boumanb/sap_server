@@ -41,6 +41,7 @@ class Course(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    attendees = models.ManyToManyField(Student)
 
     def __str__(self):
         return self.name
@@ -69,5 +70,5 @@ class Collage(models.Model):
 class Attendance(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    phone = models.BooleanField(default=False)
-    card = models.BooleanField(default=False)
+    phone_check = models.BooleanField(default=False)
+    card_check = models.BooleanField(default=False)
