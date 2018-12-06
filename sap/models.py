@@ -6,9 +6,6 @@ class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.name
-
 
 class Student(models.Model):
     name = models.CharField(max_length=200)
@@ -21,9 +18,6 @@ class Student(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.name
-
 
 class Teacher (models.Model):
     name = models.CharField(max_length=200)
@@ -32,18 +26,12 @@ class Teacher (models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.name, self.email
-
 
 class Course(models.Model):
     name = models.CharField(max_length=200)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
 
 
 class Room(models.Model):
@@ -52,18 +40,12 @@ class Room(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.name, reader_UID
-
 
 class Collage(models.Model):
     begin_time = models.DateTimeField()
     end_time = models.DateTimeField()
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
 
 
 class Attendance(models.Model):
