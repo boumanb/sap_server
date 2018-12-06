@@ -21,7 +21,6 @@ def echo(text):
     return text
 
 
-@rpc_method
 def login(installation_uid):
     """
     Returns a API token for further API usage
@@ -48,3 +47,4 @@ def login(installation_uid):
     }
 
     return r
+  

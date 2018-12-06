@@ -21,6 +21,13 @@ class Student(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
+    def attend(self):
+        # Marks attendace for the student. The booleans default to False.
+        att = Attendance(student=self)
+        att.save()
+        
+        
     def check_token_valid(self):
         if self.api_token_valid_till > timezone.now():
             return True
@@ -35,12 +42,21 @@ class Teacher(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def attend_student(self, student):
+        att = Attendance(student=student, phone_check=True, card_check=True)
+
 
 class Course(models.Model):
     name = models.CharField(max_length=200)
-    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
+    teacher = models.ManyToManyField(Teacher)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    attendees = models.ManyToManyField(Student)
+
+    def make_collages(self, room, dates, ):
+
+        #Generates the collages tables.
+        return 0
 
 
 class Room(models.Model):
@@ -51,6 +67,7 @@ class Room(models.Model):
 
 
 class Collage(models.Model):
+    day = models.DateField()
     begin_time = models.DateTimeField()
     end_time = models.DateTimeField()
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
@@ -60,6 +77,8 @@ class Collage(models.Model):
 class Attendance(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    phone_check = models.BooleanField(default=False)
+    card_check = models.BooleanField(default=False)
     phone = models.BooleanField(default=False)
     card = models.BooleanField(default=False)
 
