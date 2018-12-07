@@ -17,6 +17,24 @@ Copy and rename `.envexample` file to `.env` and provide proper settings:
 
 `cp .envexample .env`
 
+#installation of the postgresql database
+
+Installation command:
+apt-get install postgresql-10
+
+Creation of a user:
+$ sudo -u postgres createuser <username>
+           
+Creation of the database
+$ sudo -u postgres createdb <dbname>
+
+Giving the user a password
+$ sudo -u postgres psql
+psql=# alter user <username> with encrypted password '<password>';
+
+Grant privileges on the database
+psql=# grant all privileges on database <dbname> to <username> ;
+
 Launch server:
 
 `python manage.py runserver`
