@@ -1,3 +1,5 @@
+import pyotp
+from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 
@@ -16,7 +18,8 @@ class Student(models.Model):
     email = models.CharField(max_length=200, null=True)
     device = models.OneToOneField(
         Device,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True
     )
     api_token = models.CharField(max_length=200, null=True)
     api_token_valid_till = models.DateTimeField(null=True)
@@ -33,6 +36,46 @@ class Student(models.Model):
             return True
         else:
             return False
+
+    def generate_totp_secret(self):
+        if self.secret_totp is None:
+            secret = pyotp.random_base32()
+            self.secret_totp = secret
+            self.save()
+
+    def get_totp(self):
+        if self.secret_totp is None:
+            return False
+        else:
+            totp = pyotp.TOTP(self.secret_totp)
+            return totp.now()
+
+    def get_totp_obj(self):
+        if self.secret_totp is None:
+            return False
+        else:
+            totp = pyotp.TOTP(self.secret_totp)
+            return totp
+
+    def verify_totp(self, totp):
+        totp_obj = self.get_totp_obj()
+        if totp_obj.verify(totp):
+            return True
+        else:
+            return False
+
+    def send_totp_mail(self):
+        self.generate_totp_secret()
+        totp = self.get_totp()
+        send_mail(
+            'Confirm device registration',
+            'Here is the message.'
+            '\n'
+            'TOTP: ' + totp + '',
+            'nsasapattendance@gmail.com',
+            [self.email],
+            fail_silently=False,
+        )
 
 
 class Teacher(models.Model):
@@ -53,7 +96,7 @@ class Course(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     attendees = models.ManyToManyField(Student)
 
-    def make_collages(self, room, dates, ):
+    def make_colleges(self, room, dates, ):
         # Generates the collages tables.
         return 0
 
