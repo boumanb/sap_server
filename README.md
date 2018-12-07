@@ -20,6 +20,8 @@ Copy and rename `.envexample` file to `.env` and provide proper settings:
 Launch server:
 
 `python manage.py runserver`
+# API documentation
+The API documentation can be found on http://localhost:8000/rpc-doc
 # Test RPC call
 ```
 curl -X POST \
