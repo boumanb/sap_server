@@ -89,7 +89,8 @@ def confirm_register_totp(student_nr, totp):
         student = q[0]
         if student.verify_totp(totp):
             r = {
-                "success": True
+                "success": True,
+                "installation_uid": student.device.installation_uid
             }
             return r
         else:
