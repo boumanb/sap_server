@@ -1,18 +1,14 @@
 import datetime
+import secrets
 
-from django.core.mail import send_mail
 from django.utils import timezone
-
-from modernrpc.auth import set_authentication_predicate
 from modernrpc.core import rpc_method
 
 from sap.models import Device, Student
-from sap.rpc_auth import authenticate_by_token
-import secrets
 
 
 @rpc_method
-@set_authentication_predicate(authenticate_by_token)
+# @set_authentication_predicate(authenticate_by_token)
 def echo(text):
     """
     Echoes the sent in string. For testing purpose.
@@ -53,15 +49,15 @@ def login(installation_uid):
 
 
 @rpc_method
-def register(student_nr):
+def mail_register_totp(student_nr, installation_uid):
     """
     Generates and sends TOTP to student mail.
+    :param installation_uid: installation id of Android app
     :param student_nr: student number
     :return: succes boolean
     """
 
     q = Student.objects.filter(student_nr=student_nr)
-
     if not q:
         r = {
             "success": False
@@ -69,14 +65,35 @@ def register(student_nr):
         return r
     else:
         student = q[0]
-        send_mail(
-            'Confirm device registration',
-            'Here is the message.',
-            'nsasapattendance@gmail.com',
-            [student.email],
-            fail_silently=False,
-        )
+        student.send_totp_mail()
+        device = Device(installation_uid=installation_uid)
+        device.save()
+        student.device = device
+        student.save()
         r = {
-            "success": True
+            "success": True,
+            "installation_uid": installation_uid
         }
         return r
+
+
+@rpc_method
+def confirm_register_totp(student_nr, totp):
+    q = Student.objects.filter(student_nr=student_nr)
+    if not q:
+        r = {
+            "success": False
+        }
+        return r
+    else:
+        student = q[0]
+        if student.verify_totp(totp):
+            r = {
+                "success": True
+            }
+            return r
+        else:
+            r = {
+                "success": False
+            }
+            return r
