@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'modernrpc',
     'autofixture',
-    'django_seed'
+    'django_seed',
+    'django_jenkins'
 ]
 
 MIDDLEWARE = [
