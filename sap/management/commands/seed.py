@@ -31,7 +31,6 @@ def seed():
             name=seeder.faker.ean13(),
             card_uid=random.randint(1000000, 9999999),
             email=seeder.faker.email(),
-            device=d
         )
         s.save()
 
