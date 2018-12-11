@@ -35,9 +35,21 @@ psql=# alter user <username> with encrypted password '<password>';`
 Grant privileges on the database
 `psql=# grant all privileges on database <dbname> to <username>;`
 
+# Running tests
+
 If you want to run tests with `python manage.py jenkins` make sure to give the user the ability to create databases.
 
-Launch server:
+# Test RPC call
+```
+curl -X POST \
+http://127.0.0.1:8000/rpc/ \
+-H 'Content-Type: application/json' \
+-H 'Postman-Token: c7b1be21-e4eb-45eb-b91a-3d0a1ecd6c27' \
+-H 'cache-control: no-cache' \
+-d '{"jsonrpc": "2.0", "method": "test", "params": [], "id": 1}'
+```
+
+# Launch server:
 
 `python manage.py runserver`
 # API documentation
@@ -53,13 +65,3 @@ https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner
 Copy and set the right values
 
 `cp sonar-project.propertiesexample sonar-project.propertie`
-
-# Test RPC call
-```
-curl -X POST \
-http://127.0.0.1:8000/rpc/ \
--H 'Content-Type: application/json' \
--H 'Postman-Token: c7b1be21-e4eb-45eb-b91a-3d0a1ecd6c27' \
--H 'cache-control: no-cache' \
--d '{"jsonrpc": "2.0", "method": "test", "params": [], "id": 1}'
-```
