@@ -7,3 +7,5 @@ env
 .idea
 .env
 reports/
+.scannerwork/
+sonar-project.properties
