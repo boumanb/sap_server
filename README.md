@@ -42,6 +42,18 @@ Launch server:
 `python manage.py runserver`
 # API documentation
 The API documentation can be found on http://localhost:8000/rpc-doc
+
+# SonarQube
+Download and install SonarQube server
+https://docs.sonarqube.org/7.4/setup/get-started-2-minutes/
+
+Then download and install SonarQube scanner
+https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner
+
+Copy and set the right values
+
+`cp sonar-project.propertiesexample sonar-project.propertie`
+
 # Test RPC call
 ```
 curl -X POST \
