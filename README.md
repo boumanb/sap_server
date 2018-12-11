@@ -1,14 +1,12 @@
-Master: [![Build Status](https://travis-ci.com/boumanb/sap_server.svg?token=bTjkukXWPiug1LMJS9qB&branch=master)](https://travis-ci.com/boumanb/sap_server)
+###Master: [![Build Status](https://travis-ci.com/boumanb/sap_server.svg?token=bTjkukXWPiug1LMJS9qB&branch=master)](https://travis-ci.com/boumanb/sap_server)
 
-Develop: [![Build Status](https://travis-ci.com/boumanb/sap_server.svg?token=bTjkukXWPiug1LMJS9qB&branch=develop)](https://travis-ci.com/boumanb/sap_server)
+###Develop: [![Build Status](https://travis-ci.com/boumanb/sap_server.svg?token=bTjkukXWPiug1LMJS9qB&branch=develop)](https://travis-ci.com/boumanb/sap_server)
 
-[![Comments (%)](https://sonarcloud.io/api/badges/measure?key=NSASAPBackEnd&metric=comment_lines_density)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=comment_lines_density)
-[![Open issues](https://sonarcloud.io/api/badges/measure?key=NSASAPBackEnd&metric=open_issues)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=open_issues)
-[![Code smells](https://sonarcloud.io/api/badges/measure?key=NSASAPBackEnd&metric=code_smells)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=code_smells)
-[![Technical debt](https://sonarcloud.io/api/badges/measure?key=NSASAPBackEnd&metric=sqale_index)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=sqale_index)
-[![Bugs](https://sonarcloud.io/api/badges/measure?key=NSASAPBackEnd&metric=bugs)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=bugs)
-[![Reliability remediation effort](https://sonarcloud.io/api/badges/measure?key=NSASAPBackEnd&metric=reliability_remediation_effort)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=reliability_remediation_effort)
-[![Coverage](https://sonarcloud.io/api/badges/measure?key=NSASAPBackEnd&metric=coverage)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=coverage)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=NSASAPBackEnd&metric=alert_status)](https://sonarcloud.io/dashboard?id=NSASAPBackEnd)
+[![Code smells](https://sonarcloud.io/api/project_badges/measure?project=NSASAPBackEnd&metric=code_smells)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=code_smells)
+[![Technical debt](https://sonarcloud.io/api/project_badges/measure?project=NSASAPBackEnd&metric=sqale_index)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=sqale_index)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=NSASAPBackEnd&metric=bugs)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=bugs)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=NSASAPBackEnd&metric=coverage)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=coverage)
 
 # sap_server
 
