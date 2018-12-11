@@ -1,9 +1,9 @@
-#sap_server
+# sap_server
 
 *Recommend: Python 3.6*
             *PostgresSQL 11.1*
 
-#Installation
+# Installation
 
 First install virtualenv if you haven't `pip install virtualenv`
 
@@ -13,16 +13,36 @@ Then, activate virtualenv `source venv/Scripts/activate` and `deactivate` to dea
 
 Last install dependencies run `pip install -r requirements.txt`
 
-If MySQL doesn't install work `pip install --only-binary :all: mysqlclient`
-
 Copy and rename `.envexample` file to `.env` and provide proper settings:
 
 `cp .envexample .env`
 
+#installation of the postgresql database
+
+Installation command:
+`apt-get install postgresql-10`
+
+Creation of a user:
+`sudo -u postgres createuser <username>`
+           
+Creation of the database
+`sudo -u postgres createdb <dbname>`
+
+Giving the user a password
+`sudo -u postgres psql
+psql=# alter user <username> with encrypted password '<password>';`
+
+Grant privileges on the database
+`psql=# grant all privileges on database <dbname> to <username>;`
+
+If you want to run tests with `python manage.py jenkins` make sure to give the user the ability to create databases.
+
 Launch server:
 
 `python manage.py runserver`
-#Test RPC call
+# API documentation
+The API documentation can be found on http://localhost:8000/rpc-doc
+# Test RPC call
 ```
 curl -X POST \
 http://127.0.0.1:8000/rpc/ \
