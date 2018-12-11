@@ -44,9 +44,7 @@ If you want to run tests with `python manage.py jenkins` make sure to give the u
 curl -X POST \
 http://127.0.0.1:8000/rpc/ \
 -H 'Content-Type: application/json' \
--H 'Postman-Token: c7b1be21-e4eb-45eb-b91a-3d0a1ecd6c27' \
--H 'cache-control: no-cache' \
--d '{"jsonrpc": "2.0", "method": "test", "params": [], "id": 1}'
+-d '{"jsonrpc": "2.0", "method": "echo", "params": ["echo this"], "id": 1}'
 ```
 
 # Launch server:
