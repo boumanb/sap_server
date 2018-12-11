@@ -23,10 +23,19 @@ def generateDeviceStudent():
 def seed():
 
 
-    for e in range (20):
+    for e in range (10):
         generateDeviceStudent()
 
-    seeder.add_entity(Room, 20, {
+    for e in range(10):
+        s = Student(
+            name=seeder.faker.ean13(),
+            card_uid=random.randint(1000000, 9999999),
+            email=seeder.faker.email(),
+            device=d
+        )
+        s.save()
+
+    seeder.add_entity(Room, 10, {
         'name': lambda x: seeder.faker.street_suffix(),
         'reader_UID': lambda x: seeder.faker.ean13()
     })
