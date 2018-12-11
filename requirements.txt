@@ -12,4 +12,4 @@ python-decouple==3.1
 pytz==2018.7
 six==1.11.0
 text-unidecode==1.2
-gunicorn=19.9.0
+gunicorn==19.9.0
