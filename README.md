@@ -1,6 +1,6 @@
-###Master: [![Build Status](https://travis-ci.com/boumanb/sap_server.svg?token=bTjkukXWPiug1LMJS9qB&branch=master)](https://travis-ci.com/boumanb/sap_server)
+### Master: [![Build Status](https://travis-ci.com/boumanb/sap_server.svg?token=bTjkukXWPiug1LMJS9qB&branch=master)](https://travis-ci.com/boumanb/sap_server)
 
-###Develop: [![Build Status](https://travis-ci.com/boumanb/sap_server.svg?token=bTjkukXWPiug1LMJS9qB&branch=develop)](https://travis-ci.com/boumanb/sap_server)
+### Develop: [![Build Status](https://travis-ci.com/boumanb/sap_server.svg?token=bTjkukXWPiug1LMJS9qB&branch=develop)](https://travis-ci.com/boumanb/sap_server)
 
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=NSASAPBackEnd&metric=alert_status)](https://sonarcloud.io/dashboard?id=NSASAPBackEnd)
 [![Code smells](https://sonarcloud.io/api/project_badges/measure?project=NSASAPBackEnd&metric=code_smells)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=code_smells)
