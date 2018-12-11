@@ -25,7 +25,7 @@ SECRET_KEY = 'ql@6jp(#t^(ib)@)^v$5i_v%_-sko1_%7wgvj98%x(7efeesoo'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['app.nsa-sap.com', '0.0.0.0']
 
 # Application definition
 
