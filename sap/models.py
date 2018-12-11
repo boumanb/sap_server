@@ -1,4 +1,5 @@
 import pyotp
+import dateutil
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
@@ -96,8 +97,7 @@ class Course(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     attendees = models.ManyToManyField(Student)
 
-    def make_colleges(self, room, dates, ):
-        # Generates the collages tables.
+    def make_colleges(self, room, time, dates):
         return 0
 
 
