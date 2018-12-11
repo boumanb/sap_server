@@ -47,7 +47,7 @@ Grant privileges on the database
 
 # Running tests
 
-If you want to run tests with `python manage.py jenkins` make sure to give the user the ability to create databases.
+If you want to run tests with `python manage.py test` make sure to give the user the ability to create databases.
 
 # Test RPC call
 ```
