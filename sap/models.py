@@ -1,5 +1,4 @@
-import pyotp
-import datetime
+from random import randint
 from dateutil import rrule
 from django.core.mail import send_mail
 from django.db import models
@@ -10,12 +9,24 @@ class Device(models.Model):
     installation_uid = models.CharField(max_length=200, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    confirmed = models.BooleanField(default=False)
+
+    def is_confirmed(self):
+        if self.confirmed is True:
+            return True
+        else:
+            return False
+
+    def confirm_device(self):
+        self.confirmed = True
+        self.save()
 
 
 class Student(models.Model):
     name = models.CharField(max_length=200)
     student_nr = models.CharField(max_length=200, null=True)
-    secret_totp = models.CharField(max_length=200, null=True)
+    register_device_digits = models.CharField(max_length=6, null=True)
+    register_device_digits_valid_till = models.DateTimeField(null=True)
     card_uid = models.IntegerField()
     email = models.CharField(max_length=200, null=True)
     device = models.OneToOneField(
@@ -39,45 +50,40 @@ class Student(models.Model):
         else:
             return False
 
-    def generate_totp_secret(self):
-        if self.secret_totp is None:
-            secret = pyotp.random_base32()
-            self.secret_totp = secret
-            self.save()
-
-    def get_totp(self):
-        if self.secret_totp is None:
-            return False
-        else:
-            totp = pyotp.TOTP(self.secret_totp)
-            return totp.now()
-
-    def get_totp_obj(self):
-        if self.secret_totp is None:
-            return False
-        else:
-            totp = pyotp.TOTP(self.secret_totp)
-            return totp
-
-    def verify_totp(self, totp):
-        totp_obj = self.get_totp_obj()
-        if totp_obj.verify(totp):
+    def verify_registration(self, sent_register_digits):
+        if self.register_device_digits_valid_till > timezone.now():
+            return "Registration time expired"
+        if self.register_device_digits == sent_register_digits:
+            self.device.confirmed = True
+            self.device.save()
             return True
-        else:
-            return False
 
-    def send_totp_mail(self):
-        self.generate_totp_secret()
-        totp = self.get_totp()
+    def send_registration_mail(self, installation_uid):
+        if self.has_confirmed_device():
+            return False
+        register_digits = randint(100000, 999999)
+        self.register_device_digits = register_digits
+        self.register_device_digits_valid_till = timezone.now()
+        device = Device(installation_uid=installation_uid)
+        device.save()
+        self.device = device
+        self.save()
         send_mail(
             'Confirm device registration',
             'Here is the message.'
             '\n'
-            'TOTP: ' + totp + '',
+            'Registration code: ' + str(register_digits) + '',
             'nsasapattendance@gmail.com',
             [self.email],
             fail_silently=False,
         )
+        return True
+
+    def has_confirmed_device(self):
+        if self.device.is_confirmed():
+            return True
+        else:
+            return False
 
 
 class Teacher(models.Model):
@@ -91,14 +97,12 @@ class Teacher(models.Model):
         att = Attendance(student=student, phone_check=True, card_check=True)
 
 
-
 class Course(models.Model):
     name = models.CharField(max_length=200)
     teacher = models.ManyToManyField(Teacher)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     attendees = models.ManyToManyField(Student)
-
 
     def make_colleges(self, room, times, dates):
         # Times is a list of tuples(weekday, starttime, endtime)

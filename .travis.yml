@@ -13,6 +13,7 @@ addons:
     branches:
       - master
 script:
+  - python manage.py test
   - sonar-scanner -Dsonar.projectKey=NSASAPBackEnd -Dsonar.sources=sap
 branches:
   only:
