@@ -106,14 +106,14 @@ class Course(models.Model):
 
     def make_colleges(self, room, times, dates):
         # Times is a list of tuples(weekday, starttime, endtime)
-        # Dates is start and end date
+        # Dates is tuple of (startdate, enddate)
         for e in times:
             weekday = eval("rrule." + e[0])
             days = rrule.rrule(rrule.DAILY,
                                byweekday=weekday,
                                dtstart=dates[0],
                                until=dates[1])
-            print(e[1], e[2])
+
             for x in days:
                 coll = Collage(
                     day=x,
