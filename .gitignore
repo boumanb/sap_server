@@ -9,3 +9,4 @@ env
 reports/
 .scannerwork/
 sonar-project.properties
+coverage.xml
