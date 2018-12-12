@@ -7,7 +7,8 @@ import pyotp
 
 seeder = Seed.seeder()
 
-def generateDeviceStudent():
+
+def generate_device_student():
     d = Device(
         installation_uid=seeder.faker.ean13()
     )
@@ -17,14 +18,13 @@ def generateDeviceStudent():
         card_uid=random.randint(1000000, 9999999),
         email=seeder.faker.email(),
         device=d
-        )
+    )
     s.save()
 
+
 def seed():
-
-
-    for e in range (10):
-        generateDeviceStudent()
+    for e in range(10):
+        generate_device_student()
 
     for e in range(10):
         s = Student(
@@ -49,7 +49,6 @@ def seed():
         'name': lambda x: seeder.faker.catch_phrase(),
     })
     seeder.execute()
-
 
 
 class Command(BaseCommand):
