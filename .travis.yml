@@ -21,7 +21,7 @@ script:
   - python manage.py test
   - coverage run --source='sap' manage.py test
   - coverage xml -i
-  - sonar-scanner -Dsonar.projectKey=NSASAPBackEnd -Dsonar.sources=sap -Dsonar.python.coverage.reportPath=*coverage-*.xml
+  - sonar-scanner -Dsonar.projectKey=NSASAPBackEnd -Dsonar.sources=sap -Dsonar.python.coverage.reportPath=coverage.xml
 branches:
   only:
   - master
