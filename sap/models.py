@@ -1,5 +1,6 @@
 import pyotp
-import dateutil
+import datetime
+from dateutil import rrule
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
@@ -106,8 +107,9 @@ class Course(models.Model):
             weekday = eval("rrule." + e[0])
             days = rrule.rrule(rrule.DAILY,
                                byweekday=weekday,
-                               dtstart=d1,
-                               until=d2)
+                               dtstart=dates[0],
+                               until=dates[1])
+            print(e[1], e[2])
             for x in days:
                 coll = Collage(
                     day=x,
@@ -127,8 +129,8 @@ class Room(models.Model):
 
 class Collage(models.Model):
     day = models.DateField(null=True)
-    begin_time = models.DateTimeField(null=True)
-    end_time = models.DateTimeField(null=True)
+    begin_time = models.TimeField(null=True)
+    end_time = models.TimeField(null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
