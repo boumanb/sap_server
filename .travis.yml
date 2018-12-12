@@ -20,7 +20,8 @@ addons:
 script:
   - python manage.py test
   - coverage run --source='sap' manage.py test
-  - sonar-scanner -Dsonar.projectKey=NSASAPBackEnd -Dsonar.sources=sap -Dsonar.python.coverage.reportPath=sap
+  - coverage xml -i
+  - sonar-scanner -Dsonar.projectKey=NSASAPBackEnd -Dsonar.sources=sap -Dsonar.python.coverage.reportPath=*coverage-*.xml
 branches:
   only:
   - master
