@@ -1,4 +1,8 @@
 language: python
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database sap_server;' -U postgres
 python:
   - "3.6"
 # command to install dependencies
