@@ -1,4 +1,8 @@
 language: python
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database sap_server;' -U postgres
 python:
   - "3.6"
 # command to install dependencies
@@ -6,6 +10,7 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 addons:
+  postgresql: "9.4"
   sonarcloud:
     organization: "boumanb-github"
     token:
