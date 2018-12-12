@@ -33,20 +33,20 @@ def populateCourse():
 
 
 def generateCollages():
+
     course = Course.objects.get(id=1)
     room = Room.objects.get(id=1)
 
-    d1 = seeder.faker.date_between(start_date='today', end_date='+1w')
-    d2 = seeder.faker.date_between(start_date='today', end_date='+6m')
+    d1 = datetime.date(year=2018, month=6, day=15)
+    d2 = datetime.date(year=2018, month=8, day=15)
 
-    t1 = seeder.faker.time
+    t1 = datetime.time(hour=13, minute=30)
     t2 = datetime.time(hour=14, minute=30)
 
-    t3 = seeder.faker.time
+    t3 = datetime.time(hour=11, minute=30)
     t4 = datetime.time(hour=16, minute=30)
 
-
-    time = [("MO", t1, t2), ("TU", t2, t3)]
+    time = [("MO", t1, t2), ("TU", t3, t4)]
     date = (d1, d2)
 
     course.make_colleges(room, time, date)
