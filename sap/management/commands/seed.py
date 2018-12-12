@@ -2,6 +2,7 @@ from django.apps import apps
 from django_seed import Seed
 from django.core.management.base import BaseCommand
 from sap.models import *
+import datetime
 import random
 import pyotp
 
@@ -19,6 +20,36 @@ def generateDeviceStudent():
         device=d
         )
     s.save()
+
+def populateCourse():
+    course = Course.objects.get(id=1)
+    teacher = Teacher.objects.get(id=1)
+
+    course.teacher.add(teacher)
+    students = Student.objects.all()[:5]
+
+    for e in students:
+        course.attendees.add(e)
+
+
+def generateCollages():
+    course = Course.objects.get(id=1)
+    room = Room.objects.get(id=1)
+
+    d1 = seeder.faker.date_between(start_date='today', end_date='+1w')
+    d2 = seeder.faker.date_between(start_date='today', end_date='+6m')
+
+    t1 = seeder.faker.time
+    t2 = datetime.time(hour=14, minute=30)
+
+    t3 = seeder.faker.time
+    t4 = datetime.time(hour=16, minute=30)
+
+
+    time = [("MO", t1, t2), ("TU", t2, t3)]
+    date = (d1, d2)
+
+    course.make_colleges(room, time, date)
 
 def seed():
 
@@ -49,6 +80,8 @@ def seed():
         'name': lambda x: seeder.faker.catch_phrase(),
     })
     seeder.execute()
+    populateCourse()
+    generateCollages()
 
 
 
