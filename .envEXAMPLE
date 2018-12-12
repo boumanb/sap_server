@@ -8,3 +8,4 @@ EMAIL_PORT=587
 EMAIL_HOST_USER=nsasapattendance@gmail.com
 EMAIL_HOST_PASSWORD=pass
 EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+ALLOWED_HOSTS=app.nsa-sap.com,0.0.0.0
