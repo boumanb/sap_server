@@ -1,4 +1,7 @@
 language: python
+services:
+  - postgresql
+cache: pip
 python:
   - "3.6"
 # command to install dependencies
@@ -6,15 +9,20 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 addons:
+  postgresql: "9.4"
   sonarcloud:
     organization: "boumanb-github"
     token:
       secure: "DKosqzzKHPqILeJ42rBNO7Z5gUnz4y1dKhRcRCbXj8Uxz9wHKtWC0JvQI7W/kHPPgOz/CVWRGkfffv7aXJiJysjy70Y+hcZ6Co/wmlo5YNJy2JmhAxWN/YtFQPFcdRPYCaNHL/1H0Qez/VaiWH4gzQE631F+D0VEvh9xqhuDL3YqDRAqnhmIQ8mYOWrMrdpqxxHyuVPdF/L5HugyvgJKexQR72VWgnodO1mUfrqIzCAncj/w9o7Nd3Lj1ey5bfIls6iQUMWiR5zsSNWjwmM2GfERl+iAB5XQWnteG5fUxxP7ClepTyFVuOfHgBdYHDWkF45bin+spbMyGudXAJ82HkstLmErhwhWD77o0ho7YBfW7ekBcEbjznXiGjFDGyJU1LnHoBK/QKMKoAB3LdNbRuoR3x9AbjmkyouIYCLNWeMkk63FqDFtrAlZugfIppF3x8Mq13PICZKTHlhUD5yQ7x9Q+f0Qhhx+KfESbwyrBDII5oyErjkwn2q3AGHRHl07z7okfliB/nwO/3CEKuktftgWkd1jtbXS/Hf/JRMzroajXPLPm/Izn0lc3ArJA39lcWptBqHX1eR+1IGIhS+/NcsZMBn1p1FrlyTefY55dC/+hCCvgbAsaLn3MdXIV+GcvVBIbUWlKqONn+d4/HdDArpB3+hk2xoPqVIHrm5yzXU="
     branches:
       - master
+before_script:
+  - psql -c 'create database sap_server;' -U postgres
 script:
   - python manage.py test
-  - sonar-scanner -Dsonar.projectKey=NSASAPBackEnd -Dsonar.sources=sap
+  - coverage run --source='sap' manage.py test
+  - coverage xml -i
+  - sonar-scanner -Dsonar.projectKey=NSASAPBackEnd -Dsonar.sources=sap -Dsonar.python.coverage.reportPath=coverage.xml
 branches:
   only:
   - master

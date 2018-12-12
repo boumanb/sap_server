@@ -94,7 +94,7 @@ class Teacher(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def attend_student(self, student):
-        att = Attendance(student=student, phone_check=True, card_check=True)
+        Attendance(student=student, phone_check=True, card_check=True)
 
 
 class Course(models.Model):
