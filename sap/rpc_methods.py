@@ -49,7 +49,7 @@ def login(installation_uid):
 
 
 @rpc_method
-def mail_register_totp(student_nr, installation_uid):
+def mail_register_digits(student_nr, installation_uid):
     """
     Generates and sends TOTP to student mail.
     :param installation_uid: installation id of Android app
@@ -65,23 +65,19 @@ def mail_register_totp(student_nr, installation_uid):
         return r
     else:
         student = q[0]
-        student.send_totp_mail()
-        device = Device(installation_uid=installation_uid)
-        device.save()
-        student.device = device
-        student.save()
+        success = student.send_registration_mail(installation_uid)
         r = {
-            "success": True,
+            "success": success,
             "installation_uid": installation_uid
         }
         return r
 
 
 @rpc_method
-def confirm_register_totp(student_nr, totp):
+def confirm_register_digits(student_nr, register_digits):
     """
     Confirms registration of device using the student number and time base one time password
-    :param totp: time based one time password
+    :param register_digits: random generated digits
     :param student_nr: student number
     :return: JSON object with success boolean and installation id of the registered device
     """
@@ -94,7 +90,7 @@ def confirm_register_totp(student_nr, totp):
         return r
     else:
         student = q[0]
-        if student.verify_totp(totp):
+        if student.verify_registration(register_digits):
             r = {
                 "success": True,
                 "installation_uid": student.device.installation_uid
