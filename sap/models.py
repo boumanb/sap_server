@@ -1,3 +1,4 @@
+from datetime import date
 from random import randint
 from dateutil import rrule
 from django.core.mail import send_mail
@@ -39,10 +40,11 @@ class Student(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def attend(self, college):
+    def attend_card(self, college):
         # Marks attendance for the student. The booleans default to False.
-        att = Attendance(student=self, college=college)
+        att = Attendance(student=self, college=college, card_check=True)
         att.save()
+
 
     def check_token_valid(self):
         if self.api_token_valid_till > timezone.now():
@@ -131,6 +133,15 @@ class Room(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def find_college(self):
+        # Returns the current college held in the room
+        college = Collage.objects.get(
+            day=date.today(),
+            begin_time__lte=timezone.now(),
+            end_time__gte=timezone.now())
+
+        return college
+
 
 class Collage(models.Model):
     day = models.DateField(null=True)
@@ -143,8 +154,13 @@ class Collage(models.Model):
 class Attendance(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    college = models.OneToOneField(Collage, on_delete=models.CASCADE)
+    college = models.ForeignKey(Collage, on_delete=models.CASCADE, unique=False, null=True)
     phone_check = models.BooleanField(default=False)
     card_check = models.BooleanField(default=False)
     phone = models.BooleanField(default=False)
     card = models.BooleanField(default=False)
+
+    def attend_phone(self):
+        att = self
+        att.card_check = True
+        att.save()
