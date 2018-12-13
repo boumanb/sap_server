@@ -101,3 +101,23 @@ def confirm_register_digits(student_nr, register_digits):
                 "success": False
             }
             return r
+
+@rpc_method
+def card_check(card_uid, reader_uid):
+    """
+    Confirms registration of device using the student number and time base one time password
+    :param card_uid: the uid of card
+    :param student_nr: the uid of the reader used.
+    :return: OK/NOK
+    """
+    student = Student.objects.filter()
+    student.attend()
+
+@rpc_method
+def phone_check(card_uid, reader_uid):
+    """
+    Confirms registration of device using the student number and time base one time password
+    :param card_uid: the uid of card
+    :param student_nr: the uid of the reader used.
+    :return: OK/NOK
+    """

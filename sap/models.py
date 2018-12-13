@@ -39,9 +39,9 @@ class Student(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def attend(self):
+    def attend(self, college):
         # Marks attendance for the student. The booleans default to False.
-        att = Attendance(student=self)
+        att = Attendance(student=self, college=college)
         att.save()
 
     def check_token_valid(self):
