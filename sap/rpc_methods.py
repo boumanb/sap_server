@@ -2,14 +2,28 @@ import datetime
 import secrets
 
 from django.utils import timezone
+from modernrpc.auth import set_authentication_predicate
 from modernrpc.core import rpc_method
 
 from sap.models import Device, Student
+from sap.rpc_auth import authenticate_by_token
 
 
 @rpc_method
 # @set_authentication_predicate(authenticate_by_token)
 def echo(text):
+    """
+    Echoes the sent in string. For testing purpose.
+    :param text: string containing text.
+    :return: the sent in string.
+    """
+
+    return text
+
+
+@rpc_method
+@set_authentication_predicate(authenticate_by_token)
+def echo_with_auth(text):
     """
     Echoes the sent in string. For testing purpose.
     :param text: string containing text.

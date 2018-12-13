@@ -1,6 +1,9 @@
+import datetime
 import json
 
 from django.test import TestCase
+from django.utils import timezone
+
 from sap.models import Student, Device
 
 
@@ -28,6 +31,7 @@ class StudentModelTests(TestCase):
 
 
 class RPCAPITests(TestCase):
+    url = "http://127.0.0.1:8000/rpc/"
 
     @classmethod
     def setUpTestData(cls):
@@ -40,9 +44,6 @@ class RPCAPITests(TestCase):
         )
 
     def test_echo(self):
-
-        url = "http://127.0.0.1:8000/rpc/"
-
         payload = {
             "method": "echo",
             "params": ["echome!"],
@@ -50,17 +51,14 @@ class RPCAPITests(TestCase):
             "id": 0,
         }
 
-        response = self.client.post(url, data=payload, content_type='application/json')
+        response = self.client.post(self.url, data=payload, content_type='application/json')
         jsonresponse = json.loads(response.content)
 
         assert jsonresponse['result'] == 'echome!'
         assert jsonresponse['jsonrpc']
         assert jsonresponse['id'] == 0
 
-    def test_login(self):
-
-        url = "http://127.0.0.1:8000/rpc/"
-
+    def test_echo_auth_valid(self):
         payload = {
             "method": "login",
             "params": ["123"],
@@ -68,7 +66,77 @@ class RPCAPITests(TestCase):
             "id": 0,
         }
 
-        response = self.client.post(url, data=payload, content_type='application/json')
+        response = self.client.post(self.url, data=payload, content_type='application/json')
+        jsonresponse = json.loads(response.content)
+
+        self.student.refresh_from_db()
+
+        assert jsonresponse['result']['valid_till']
+        assert jsonresponse['result']['token']
+        assert jsonresponse['jsonrpc']
+        assert jsonresponse['id'] == 0
+        assert jsonresponse['result']['token'] == self.student.api_token
+
+        payload = {
+            "method": "echo_with_auth",
+            "params": ["echome!"],
+            "jsonrpc": "2.0",
+            "id": 1,
+        }
+
+        response = self.client.post(self.url, data=payload, content_type='application/json', **{"HTTP_AUTHORIZATION": jsonresponse['result']['token']})
+        jsonresponse = json.loads(response.content)
+
+        assert jsonresponse['result'] == 'echome!'
+        assert jsonresponse['jsonrpc']
+        assert jsonresponse['id'] == 1
+
+    def test_echo_auth_expired(self):
+        payload = {
+            "method": "login",
+            "params": ["123"],
+            "jsonrpc": "2.0",
+            "id": 0,
+        }
+
+        response = self.client.post(self.url, data=payload, content_type='application/json')
+        jsonresponse = json.loads(response.content)
+
+        self.student.refresh_from_db()
+        self.student.api_token_valid_till = timezone.now() + datetime.timedelta(minutes=-10)
+        self.student.save()
+
+        assert jsonresponse['result']['valid_till']
+        assert jsonresponse['result']['token']
+        assert jsonresponse['jsonrpc']
+        assert jsonresponse['id'] == 0
+        assert jsonresponse['result']['token'] == self.student.api_token
+
+        payload = {
+            "method": "echo_with_auth",
+            "params": ["echome!"],
+            "jsonrpc": "2.0",
+            "id": 1,
+        }
+
+        response = self.client.post(self.url, data=payload, content_type='application/json',
+                                    **{"HTTP_AUTHORIZATION": jsonresponse['result']['token']})
+        jsonresponse = json.loads(response.content)
+
+        assert jsonresponse['error']['code'] == -32603
+        self.assertIn('Authentication failed when calling', jsonresponse['error']['message'])
+        self.assertEqual(response.status_code, 403)
+        assert jsonresponse['id'] == 1
+
+    def test_login(self):
+        payload = {
+            "method": "login",
+            "params": ["123"],
+            "jsonrpc": "2.0",
+            "id": 0,
+        }
+
+        response = self.client.post(self.url, data=payload, content_type='application/json')
         jsonresponse = json.loads(response.content)
 
         self.student.refresh_from_db()
