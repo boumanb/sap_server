@@ -161,6 +161,5 @@ class Attendance(models.Model):
     card = models.BooleanField(default=False)
 
     def attend_phone(self):
-        att = self
-        att.card_check = True
-        att.save()
+        self.phone_check = True
+        self.save()
