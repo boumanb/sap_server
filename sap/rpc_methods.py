@@ -10,7 +10,6 @@ from sap.rpc_auth import authenticate_by_token
 
 
 @rpc_method
-# @set_authentication_predicate(authenticate_by_token)
 def echo(text):
     """
     Echoes the sent in string. For testing purpose.
@@ -122,7 +121,7 @@ def card_check(card_uid, reader_uid):
     """
     Creates attendance table entry and marks card check to true
     :param card_uid: the uid of card
-    :param student_nr: the uid of the reader used.
+    :param reader_uid: the uid of the reader used.
     :return: OK/NOK
     """
 
@@ -132,16 +131,17 @@ def card_check(card_uid, reader_uid):
     college = room.find_college()
 
     if not college:
-        response = {
-            "msg": "No class foo!"
+        r = {
+            "success": False,
+            "msg": "No college found"
         }
-        return response
+        return r
     else:
         student.attend_card(college)
-        response = {
-            "msg": "Ok"
+        r = {
+            "success": True
         }
-        return response
+        return r
 
 
 @rpc_method
@@ -157,14 +157,16 @@ def phone_check(uid):
         student=student,
         timestamp__gte=timezone.now() - datetime.timedelta(seconds=5))
     if not att:
-        response = {
+        r = {
+            "success": False,
             "msg": "Too slow"
         }
-        return response
+        return r
 
     else:
         att.attend_phone()
-        response = {
+        r = {
+            "success": True,
             "msg": "Attendance marked"
         }
-        return response
+        return r

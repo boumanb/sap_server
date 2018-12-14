@@ -45,7 +45,6 @@ class Student(models.Model):
         att = Attendance(student=self, college=college, card_check=True)
         att.save()
 
-
     def check_token_valid(self):
         if self.api_token_valid_till > timezone.now():
             return True
