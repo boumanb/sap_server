@@ -87,7 +87,7 @@ def mail_register_digits(student_nr, installation_uid):
     Generates and sends TOTP to student mail.
     :param installation_uid: installation id of Android app
     :param student_nr: student number
-    :return: JSON object with success boolean and installation id of the registered device
+    :return: JSON object with success boolean
     """
     q = Student.objects.filter(student_nr=student_nr)
     if not q:
@@ -99,8 +99,7 @@ def mail_register_digits(student_nr, installation_uid):
         student = q[0]
         success = student.send_registration_mail(installation_uid)
         r = {
-            "success": success,
-            "installation_uid": installation_uid
+            "success": success
         }
         return r
 
