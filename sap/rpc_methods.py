@@ -145,13 +145,13 @@ def card_check(card_uid, reader_uid):
 
 
 @rpc_method
-def phone_check(uid):
+def phone_check(installation_uid):
     """
     Checks if the the attendance hits timewindow
-    :param uid: the uid of the device
+    :param installation_uid: the installation_uid of the device
     :return: OK/NOK
     """
-    device = Device.objects.get(installation_uid=uid)
+    device = Device.objects.get(installation_uid=installation_uid)
     student = Student.objects.get(device=device)
     att = Attendance.objects.get(
         student=student,
