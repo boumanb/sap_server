@@ -1,3 +1,13 @@
+### Master: [![Build Status](https://travis-ci.com/boumanb/sap_server.svg?token=bTjkukXWPiug1LMJS9qB&branch=master)](https://travis-ci.com/boumanb/sap_server)
+
+### Develop: [![Build Status](https://travis-ci.com/boumanb/sap_server.svg?token=bTjkukXWPiug1LMJS9qB&branch=develop)](https://travis-ci.com/boumanb/sap_server)
+
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=NSASAPBackEnd&metric=alert_status)](https://sonarcloud.io/dashboard?id=NSASAPBackEnd)
+[![Code smells](https://sonarcloud.io/api/project_badges/measure?project=NSASAPBackEnd&metric=code_smells)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=code_smells)
+[![Technical debt](https://sonarcloud.io/api/project_badges/measure?project=NSASAPBackEnd&metric=sqale_index)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=sqale_index)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=NSASAPBackEnd&metric=bugs)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=bugs)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=NSASAPBackEnd&metric=coverage)](https://sonarcloud.io/component_measures?id=NSASAPBackEnd&metric=coverage)
+
 # sap_server
 
 *Recommend: Python 3.6*
@@ -35,19 +45,31 @@ psql=# alter user <username> with encrypted password '<password>';`
 Grant privileges on the database
 `psql=# grant all privileges on database <dbname> to <username>;`
 
-If you want to run tests with `python manage.py jenkins` make sure to give the user the ability to create databases.
+# Running tests
 
-Launch server:
+If you want to run tests with `python manage.py test` make sure to give the user the ability to create databases.
 
-`python manage.py runserver`
-# API documentation
-The API documentation can be found on http://localhost:8000/rpc-doc
 # Test RPC call
 ```
 curl -X POST \
 http://127.0.0.1:8000/rpc/ \
 -H 'Content-Type: application/json' \
--H 'Postman-Token: c7b1be21-e4eb-45eb-b91a-3d0a1ecd6c27' \
--H 'cache-control: no-cache' \
--d '{"jsonrpc": "2.0", "method": "test", "params": [], "id": 1}'
+-d '{"jsonrpc": "2.0", "method": "echo", "params": ["echo this"], "id": 1}'
 ```
+
+# Launch server:
+
+`python manage.py runserver`
+# API documentation
+The API documentation can be found on http://localhost:8000/rpc-doc
+
+# SonarQube
+Download and install SonarQube server
+https://docs.sonarqube.org/7.4/setup/get-started-2-minutes/
+
+Then download and install SonarQube scanner
+https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner
+
+Copy and set the right values
+
+`cp sonar-project.propertiesexample sonar-project.propertie`

@@ -1,4 +1,8 @@
-import pyotp
+from datetime import date
+from random import randint
+
+import bcrypt
+from dateutil import rrule
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
@@ -8,17 +12,29 @@ class Device(models.Model):
     installation_uid = models.CharField(max_length=200, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    confirmed = models.BooleanField(default=False)
+
+    def is_confirmed(self):
+        if self.confirmed is True:
+            return True
+        else:
+            return False
+
+    def confirm_device(self):
+        self.confirmed = True
+        self.save()
 
 
 class Student(models.Model):
     name = models.CharField(max_length=200)
     student_nr = models.CharField(max_length=200, null=True)
-    secret_totp = models.CharField(max_length=200, null=True)
+    register_device_digits = models.CharField(max_length=6, null=True)
+    register_device_digits_valid_till = models.DateTimeField(null=True)
     card_uid = models.IntegerField()
     email = models.CharField(max_length=200, null=True)
     device = models.OneToOneField(
         Device,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True
     )
     api_token = models.CharField(max_length=200, null=True)
@@ -26,9 +42,9 @@ class Student(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def attend(self):
-        # Marks attendace for the student. The booleans default to False.
-        att = Attendance(student=self)
+    def attend_card(self, college):
+        # Marks attendance for the student. The booleans default to False.
+        att = Attendance(student=self, college=college, card_check=True)
         att.save()
 
     def check_token_valid(self):
@@ -37,45 +53,44 @@ class Student(models.Model):
         else:
             return False
 
-    def generate_totp_secret(self):
-        if self.secret_totp is None:
-            secret = pyotp.random_base32()
-            self.secret_totp = secret
-            self.save()
-
-    def get_totp(self):
-        if self.secret_totp is None:
-            return False
-        else:
-            totp = pyotp.TOTP(self.secret_totp)
-            return totp.now()
-
-    def get_totp_obj(self):
-        if self.secret_totp is None:
-            return False
-        else:
-            totp = pyotp.TOTP(self.secret_totp)
-            return totp
-
-    def verify_totp(self, totp):
-        totp_obj = self.get_totp_obj()
-        if totp_obj.verify(totp):
+    def verify_registration(self, sent_register_digits, installation_uid):
+        if self.register_device_digits_valid_till > timezone.now():
+            return "Registration time expired"
+        if self.register_device_digits == sent_register_digits and bcrypt.checkpw(installation_uid.encode('utf-8'),
+                                                                                  self.device.installation_uid.encode(
+                                                                                      'utf-8')):
+            self.device.confirmed = True
+            self.device.save()
             return True
-        else:
-            return False
 
-    def send_totp_mail(self):
-        self.generate_totp_secret()
-        totp = self.get_totp()
+    def send_registration_mail(self, installation_uid):
+        if self.has_confirmed_device():
+            return False
+        register_digits = randint(100000, 999999)
+        self.register_device_digits = register_digits
+        self.register_device_digits_valid_till = timezone.now()
+        salt = bcrypt.gensalt()
+        hashed_installation_uid = bcrypt.hashpw(installation_uid.encode('utf-8'), salt)
+        device = Device(installation_uid=hashed_installation_uid.decode('utf-8'))
+        device.save()
+        self.device = device
+        self.save()
         send_mail(
             'Confirm device registration',
             'Here is the message.'
             '\n'
-            'TOTP: ' + totp + '',
+            'Registration code: ' + str(register_digits) + '',
             'nsasapattendance@gmail.com',
             [self.email],
             fail_silently=False,
         )
+        return True
+
+    def has_confirmed_device(self):
+        if self.device and self.device.is_confirmed():
+            return True
+        else:
+            return False
 
 
 class Teacher(models.Model):
@@ -86,7 +101,7 @@ class Teacher(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def attend_student(self, student):
-        att = Attendance(student=student, phone_check=True, card_check=True)
+        Attendance(student=student, phone_check=True, card_check=True)
 
 
 class Course(models.Model):
@@ -96,9 +111,25 @@ class Course(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     attendees = models.ManyToManyField(Student)
 
-    def make_colleges(self, room, dates, ):
-        # Generates the collages tables.
-        return 0
+    def make_colleges(self, room, times, dates):
+        # Times is a list of tuples(weekday, starttime, endtime)
+        # Dates is tuple of (startdate, enddate)
+        for e in times:
+            weekday = eval("rrule." + e[0])
+            days = rrule.rrule(rrule.DAILY,
+                               byweekday=weekday,
+                               dtstart=dates[0],
+                               until=dates[1])
+
+            for x in days:
+                coll = Collage(
+                    day=x,
+                    begin_time=e[1],
+                    end_time=e[2],
+                    room=room,
+                    course=self
+                )
+                coll.save()
 
 
 class Room(models.Model):
@@ -107,11 +138,20 @@ class Room(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def find_college(self):
+        # Returns the current college held in the room
+        college = Collage.objects.get(
+            day=date.today(),
+            begin_time__lte=timezone.now(),
+            end_time__gte=timezone.now())
+
+        return college
+
 
 class Collage(models.Model):
     day = models.DateField(null=True)
-    begin_time = models.DateTimeField(null=True)
-    end_time = models.DateTimeField(null=True)
+    begin_time = models.TimeField(null=True)
+    end_time = models.TimeField(null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
@@ -119,7 +159,12 @@ class Collage(models.Model):
 class Attendance(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    college = models.ForeignKey(Collage, on_delete=models.CASCADE, unique=False, null=True)
     phone_check = models.BooleanField(default=False)
     card_check = models.BooleanField(default=False)
     phone = models.BooleanField(default=False)
     card = models.BooleanField(default=False)
+
+    def attend_phone(self):
+        self.phone_check = True
+        self.save()
