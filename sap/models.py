@@ -22,6 +22,9 @@ class Device(models.Model):
         self.confirmed = True
         self.save()
 
+    def __str__(self):
+        return self.installation_uid
+
 
 class Student(models.Model):
     name = models.CharField(max_length=200)
@@ -86,6 +89,9 @@ class Student(models.Model):
         else:
             return False
 
+    def __str__(self):
+        return self.name
+
 
 class Teacher(models.Model):
     name = models.CharField(max_length=200)
@@ -94,8 +100,11 @@ class Teacher(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def attend_student(self, student):
-        Attendance(student=student, phone_check=True, card_check=True)
+    def attend_student(self, student, college):
+        Attendance(student=student, college=college, phone_check=True, card_check=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Course(models.Model):
@@ -125,6 +134,9 @@ class Course(models.Model):
                 )
                 coll.save()
 
+    def __str__(self):
+        return self.name
+
 
 class Room(models.Model):
     name = models.CharField(max_length=200)
@@ -140,6 +152,9 @@ class Room(models.Model):
             end_time__gte=timezone.now())
 
         return college
+
+    def __str__(self):
+        return self.name
 
 
 class Collage(models.Model):
