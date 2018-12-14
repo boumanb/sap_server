@@ -40,21 +40,40 @@ def login(installation_uid):
     :param installation_uid: installation UID of Android app
     :return: JSON containing token
     """
-
     q = Device.objects.filter(installation_uid=installation_uid)
+    if not q:
+        r = {
+            "success": False,
+            "msg": "no device found"
+        }
+        return r
+
     device_id = q[0].id
+    q = Student.objects.filter(device=device_id)
+    if not q:
+        r = {
+            "success": False,
+            "msg": "no student found for device"
+        }
+        return r
+
+    student = q[0]
+    if not student.device.is_confirmed():
+        r = {
+            "success": False,
+            "msg": "device not confirmed"
+        }
+        return r
 
     token = secrets.token_urlsafe()
     token_valid_till = timezone.now() + datetime.timedelta(minutes=10)
-
-    q = Student.objects.filter(device=device_id)
-    student = q[0]
 
     student.api_token = token
     student.api_token_valid_till = token_valid_till
     student.save()
 
     r = {
+        "success": True,
         "token": token,
         "valid_till": token_valid_till
     }
@@ -70,7 +89,6 @@ def mail_register_digits(student_nr, installation_uid):
     :param student_nr: student number
     :return: JSON object with success boolean and installation id of the registered device
     """
-
     q = Student.objects.filter(student_nr=student_nr)
     if not q:
         r = {
@@ -88,26 +106,26 @@ def mail_register_digits(student_nr, installation_uid):
 
 
 @rpc_method
-def confirm_register_digits(student_nr, register_digits):
+def confirm_register_digits(student_nr, register_digits, installation_uid):
     """
     Confirms registration of device using the student number and time base one time password
     :param register_digits: random generated digits
     :param student_nr: student number
+    :param installation_uid: installation_uid from the app
     :return: JSON object with success boolean and installation id of the registered device
     """
-
     q = Student.objects.filter(student_nr=student_nr)
     if not q:
         r = {
-            "success": False
+            "success": False,
+            "msg": "no student found"
         }
         return r
     else:
         student = q[0]
-        if student.verify_registration(register_digits):
+        if student.verify_registration(register_digits, installation_uid):
             r = {
-                "success": True,
-                "installation_uid": student.device.installation_uid
+                "success": True
             }
             return r
         else:
@@ -125,7 +143,6 @@ def card_check(card_uid, reader_uid):
     :param reader_uid: the uid of the reader used.
     :return: OK/NOK
     """
-
     student = Student.objects.get(card_uid=card_uid)
     room = Room.objects.get(reader_UID=reader_uid)
 
@@ -137,7 +154,7 @@ def card_check(card_uid, reader_uid):
     except exceptions.ObjectDoesNotExist:
         r = {
             "success": False,
-            "msg": "No college found"
+            "msg": "no college found"
         }
         return r
 
@@ -168,7 +185,7 @@ def phone_check(installation_uid):
     except exceptions.ObjectDoesNotExist:
         r = {
             "success": False,
-            "msg": "Too slow"
+            "msg": "too slow"
         }
         return r
 
@@ -176,6 +193,6 @@ def phone_check(installation_uid):
         att.attend_phone()
         r = {
             "success": True,
-            "msg": "Attendance marked"
+            "msg": "attendance marked"
         }
         return r

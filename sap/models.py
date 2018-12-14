@@ -51,10 +51,10 @@ class Student(models.Model):
         else:
             return False
 
-    def verify_registration(self, sent_register_digits):
+    def verify_registration(self, sent_register_digits, installation_uid):
         if self.register_device_digits_valid_till > timezone.now():
             return "Registration time expired"
-        if self.register_device_digits == sent_register_digits:
+        if self.register_device_digits == sent_register_digits and self.device.installation_uid == installation_uid:
             self.device.confirmed = True
             self.device.save()
             return True
