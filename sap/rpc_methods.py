@@ -1,6 +1,7 @@
 import datetime
 import secrets
 
+from django.core import exceptions
 from django.utils import timezone
 from modernrpc.auth import set_authentication_predicate
 from modernrpc.core import rpc_method
@@ -130,12 +131,16 @@ def card_check(card_uid, reader_uid):
 
     college = room.find_college()
 
-    if not college:
+    try:
+        college = room.find_college()
+
+    except exceptions.ObjectDoesNotExist:
         r = {
             "success": False,
             "msg": "No college found"
         }
         return r
+
     else:
         student.attend_card(college)
         r = {
@@ -153,10 +158,14 @@ def phone_check(installation_uid):
     """
     device = Device.objects.get(installation_uid=installation_uid)
     student = Student.objects.get(device=device)
-    att = Attendance.objects.get(
-        student=student,
-        timestamp__gte=timezone.now() - datetime.timedelta(seconds=5))
-    if not att:
+
+    try:
+
+        att = Attendance.objects.get(
+            student=student,
+            timestamp__gte=timezone.now() - datetime.timedelta(seconds=5))
+
+    except exceptions.ObjectDoesNotExist:
         r = {
             "success": False,
             "msg": "Too slow"
