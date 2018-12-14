@@ -32,7 +32,7 @@ class Student(models.Model):
     email = models.CharField(max_length=200, null=True)
     device = models.OneToOneField(
         Device,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True
     )
     api_token = models.CharField(max_length=200, null=True)

@@ -1,10 +1,9 @@
-from django.apps import apps
 from django_seed import Seed
 from django.core.management.base import BaseCommand
 from sap.models import *
 import datetime
 import random
-import pyotp
+
 
 seeder = Seed.seeder()
 
@@ -26,7 +25,7 @@ def populateCourse():
     teacher = Teacher.objects.get(id=1)
 
     course.teacher.add(teacher)
-    students = Student.objects.all()[:5]
+    students = Student.objects.all()[:10]
 
     for e in students:
         course.attendees.add(e)
@@ -51,10 +50,10 @@ def generateCollages():
 
     course.make_colleges(room, time, date)
 
+
 def seed():
 
-
-    for e in range (10):
+    for e in range(10):
         generateDeviceStudent()
 
     for e in range(10):
@@ -82,7 +81,6 @@ def seed():
     seeder.execute()
     populateCourse()
     generateCollages()
-
 
 
 class Command(BaseCommand):
