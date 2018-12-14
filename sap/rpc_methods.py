@@ -2,14 +2,27 @@ import datetime
 import secrets
 
 from django.utils import timezone
+from modernrpc.auth import set_authentication_predicate
 from modernrpc.core import rpc_method
 
-from sap.models import Device, Student
+from sap.models import Device, Student, Room, Attendance
+from sap.rpc_auth import authenticate_by_token
 
 
 @rpc_method
-# @set_authentication_predicate(authenticate_by_token)
 def echo(text):
+    """
+    Echoes the sent in string. For testing purpose.
+    :param text: string containing text.
+    :return: the sent in string.
+    """
+
+    return text
+
+
+@rpc_method
+@set_authentication_predicate(authenticate_by_token)
+def echo_with_auth(text):
     """
     Echoes the sent in string. For testing purpose.
     :param text: string containing text.
@@ -101,3 +114,59 @@ def confirm_register_digits(student_nr, register_digits):
                 "success": False
             }
             return r
+
+
+@rpc_method
+def card_check(card_uid, reader_uid):
+    """
+    Creates attendance table entry and marks card check to true
+    :param card_uid: the uid of card
+    :param reader_uid: the uid of the reader used.
+    :return: OK/NOK
+    """
+
+    student = Student.objects.get(card_uid=card_uid)
+    room = Room.objects.get(reader_UID=reader_uid)
+
+    college = room.find_college()
+
+    if not college:
+        r = {
+            "success": False,
+            "msg": "No college found"
+        }
+        return r
+    else:
+        student.attend_card(college)
+        r = {
+            "success": True
+        }
+        return r
+
+
+@rpc_method
+def phone_check(uid):
+    """
+    Checks if the the attendance hits timewindow
+    :param uid: the uid of the device
+    :return: OK/NOK
+    """
+    device = Device.objects.get(installation_uid=uid)
+    student = Student.objects.get(device=device)
+    att = Attendance.objects.get(
+        student=student,
+        timestamp__gte=timezone.now() - datetime.timedelta(seconds=5))
+    if not att:
+        r = {
+            "success": False,
+            "msg": "Too slow"
+        }
+        return r
+
+    else:
+        att.attend_phone()
+        r = {
+            "success": True,
+            "msg": "Attendance marked"
+        }
+        return r
