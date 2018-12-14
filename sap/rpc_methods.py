@@ -5,10 +5,8 @@ from django.utils import timezone
 from modernrpc.auth import set_authentication_predicate
 from modernrpc.core import rpc_method
 
-
 from sap.models import Device, Student, Room, Attendance
 from sap.rpc_auth import authenticate_by_token
-
 
 
 @rpc_method
@@ -118,6 +116,7 @@ def confirm_register_digits(student_nr, register_digits):
             }
             return r
 
+
 @rpc_method
 def card_check(card_uid, reader_uid):
     """
@@ -143,6 +142,7 @@ def card_check(card_uid, reader_uid):
             "msg": "Ok"
         }
         return response
+
 
 @rpc_method
 def phone_check(uid):
