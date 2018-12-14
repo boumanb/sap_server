@@ -1,5 +1,7 @@
 from datetime import date
 from random import randint
+
+import bcrypt
 from dateutil import rrule
 from django.core.mail import send_mail
 from django.db import models
@@ -32,7 +34,7 @@ class Student(models.Model):
     email = models.CharField(max_length=200, null=True)
     device = models.OneToOneField(
         Device,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True
     )
     api_token = models.CharField(max_length=200, null=True)
@@ -45,17 +47,16 @@ class Student(models.Model):
         att = Attendance(student=self, college=college, card_check=True)
         att.save()
 
-
     def check_token_valid(self):
         if self.api_token_valid_till > timezone.now():
             return True
         else:
             return False
 
-    def verify_registration(self, sent_register_digits):
+    def verify_registration(self, sent_register_digits, installation_uid):
         if self.register_device_digits_valid_till > timezone.now():
             return "Registration time expired"
-        if self.register_device_digits == sent_register_digits:
+        if self.register_device_digits == sent_register_digits and bcrypt.checkpw(installation_uid.encode('utf-8'), self.device.installation_uid.encode('utf-8')):
             self.device.confirmed = True
             self.device.save()
             return True
@@ -66,7 +67,9 @@ class Student(models.Model):
         register_digits = randint(100000, 999999)
         self.register_device_digits = register_digits
         self.register_device_digits_valid_till = timezone.now()
-        device = Device(installation_uid=installation_uid)
+        salt = bcrypt.gensalt()
+        hashed_installation_uid = bcrypt.hashpw(installation_uid.encode('utf-8'), salt)
+        device = Device(installation_uid=hashed_installation_uid.decode('utf-8'))
         device.save()
         self.device = device
         self.save()
@@ -82,7 +85,7 @@ class Student(models.Model):
         return True
 
     def has_confirmed_device(self):
-        if self.device.is_confirmed():
+        if self.device and self.device.is_confirmed():
             return True
         else:
             return False
