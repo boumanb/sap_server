@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Index{% endblock %}
+
+{% block content %}
+<div class="col-12">
+<h2>Students</h2>
+{% for student in students %}
+    <div class="col-sm-5 col-md-5 col-lg-5">
+        <h5>Student name: {{ student.name }}</h5>
+        <label>Student number: {{ student.student_nr }}</label>
+        <label>Student email: {{ student.email }}</>
+        <button type="submit" class="btn btn-danger">Testing</button>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

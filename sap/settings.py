@@ -40,7 +40,11 @@ INSTALLED_APPS = [
     'modernrpc',
     'autofixture',
     'django_seed',
-    'django_jenkins'
+    'django_jenkins',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'FrontEndAPI',
+    'TeacherPortal',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +138,11 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_BACKEND = config('EMAIL_BACKEND')
 EMAIL_USE_TLS = True
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',), #AllowAny
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
