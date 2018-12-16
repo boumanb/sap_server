@@ -13,7 +13,7 @@ def generateDeviceStudent():
     )
     d.save()
     s = Student(
-        name=seeder.faker.ean13(),
+        name=seeder.faker.name(),
         card_uid=random.randint(1000000, 9999999),
         email=seeder.faker.email(),
         device=d
