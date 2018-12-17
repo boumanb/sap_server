@@ -93,6 +93,10 @@ class Student(models.Model):
         else:
             return False
 
+    def get_attendances(self):
+        attendances = Attendance.objects.filter(student= self)
+        return attendances
+
     def __str__(self):
         return self.name
 
@@ -142,6 +146,7 @@ class Course(models.Model):
         return self.name
 
 
+# noinspection PyMethodMayBeStatic
 class Room(models.Model):
     name = models.CharField(max_length=200)
     reader_UID = models.CharField(max_length=200)
