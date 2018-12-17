@@ -94,7 +94,7 @@ class Student(models.Model):
             return False
 
     def get_attendances(self):
-        attendances = Attendance.objects.filter(student= self)
+        attendances = Attendance.objects.filter(student=self)
         return attendances
 
     def __str__(self):

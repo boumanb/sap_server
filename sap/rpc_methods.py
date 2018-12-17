@@ -143,13 +143,23 @@ def card_check(card_uid, reader_uid):
     :return: OK/NOK
     """
     student = Student.objects.get(card_uid=card_uid)
-    room = Room.objects.get(reader_UID=reader_uid)
+    if not student:
+        r = {
+            "success": False,
+            "msg": "no student found"
+        }
+        return r
 
-    college = room.find_college()
+    room = Room.objects.get(reader_UID=reader_uid)
+    if not room:
+        r = {
+            "success": False,
+            "msg": "no room found"
+        }
+        return r
 
     try:
         college = room.find_college()
-
     except exceptions.ObjectDoesNotExist:
         r = {
             "success": False,
@@ -176,7 +186,6 @@ def phone_check(installation_uid):
     student = Student.objects.get(device=device)
 
     try:
-
         att = Attendance.objects.get(
             student=student,
             timestamp__gte=timezone.now() - datetime.timedelta(seconds=5))
@@ -184,7 +193,7 @@ def phone_check(installation_uid):
     except exceptions.ObjectDoesNotExist:
         r = {
             "success": False,
-            "msg": "too slow"
+            "msg": "try again"
         }
         return r
 
