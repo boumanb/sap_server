@@ -129,7 +129,7 @@ class Course(models.Model):
                                until=dates[1])
 
             for x in days:
-                coll = Collage(
+                coll = College(
                     day=x,
                     begin_time=e[1],
                     end_time=e[2],
@@ -150,7 +150,7 @@ class Room(models.Model):
 
     def find_college(self):
         # Returns the current college held in the room
-        college = Collage.objects.get(
+        college = College.objects.get(
             day=date.today(),
             begin_time__lte=timezone.now(),
             end_time__gte=timezone.now())
@@ -161,7 +161,7 @@ class Room(models.Model):
         return self.name
 
 
-class Collage(models.Model):
+class College(models.Model):
     day = models.DateField(null=True)
     begin_time = models.TimeField(null=True)
     end_time = models.TimeField(null=True)
@@ -172,7 +172,7 @@ class Collage(models.Model):
 class Attendance(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    college = models.ForeignKey(Collage, on_delete=models.CASCADE, unique=False, null=True)
+    college = models.ForeignKey(College, on_delete=models.CASCADE, unique=False, null=True)
     phone_check = models.BooleanField(default=False)
     card_check = models.BooleanField(default=False)
     phone = models.BooleanField(default=False)
