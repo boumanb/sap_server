@@ -20,18 +20,6 @@ class StudentModelTests(TestCase):
         )
         cls.room = Room.objects.create(name='Test', reader_UID='12345')
         cls.teacher = Teacher.objects.create(name='Test teacher', password='test', email='test@test.nl')
-        cls.course = Course.objects.create(name='Computer science')
-        cls.course.teacher.add(cls.teacher)
-        cls.course.attendees.add(cls.student)
-        now = timezone.now()
-        now_plus_10_min = now + datetime.timedelta(minutes=10)
-        d1 = datetime.date(year=now.year, month=now.month, day=1)
-        d2 = datetime.date(year=now.year, month=now.month, day=31)
-        t1 = datetime.time(hour=now.hour, minute=now.minute)
-        t2 = datetime.time(hour=now_plus_10_min.hour, minute=now_plus_10_min.minute)
-        day_str = t1.strftime('%a')[:2].upper()
-        dates = (d1, d2)
-        cls.course.make_colleges(cls.room, [(day_str, t1, t2)], dates)
 
     def test_has_device_but_not_confirmed(self):
         student = Student()
@@ -53,12 +41,7 @@ class StudentModelTests(TestCase):
         student.device = device
         self.assertIs(student.send_registration_mail(installation_uid="test"), False)
 
-    def test_find_college_for_room(self):
-        college = self.room.find_college()
-        self.assertEqual(college.room, self.room)
 
-
-# noinspection PyMethodMayBeStatic
 class RPCAPITests(TestCase):
     url = "http://127.0.0.1:8000/rpc/"
 
@@ -149,12 +132,6 @@ class RPCAPITests(TestCase):
         self.student.refresh_from_db()
         self.student.api_token_valid_till = timezone.now() + datetime.timedelta(minutes=-10)
         self.student.save()
-
-        assert jsonresponse['result']['valid_till']
-        assert jsonresponse['result']['token']
-        assert jsonresponse['jsonrpc']
-        assert jsonresponse['id'] == 0
-        assert jsonresponse['result']['token'] == self.student.api_token
 
         payload = {
             "method": "echo_with_auth",
