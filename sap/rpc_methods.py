@@ -145,8 +145,6 @@ def card_check(card_uid, reader_uid):
     student = Student.objects.get(card_uid=card_uid)
     room = Room.objects.get(reader_UID=reader_uid)
 
-    college = room.find_college()
-
     try:
         college = room.find_college()
 
