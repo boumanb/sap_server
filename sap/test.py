@@ -282,7 +282,7 @@ class RPCAPITests(TestCase):
         response = self.client.post(self.url, data=payload, content_type='application/json')
         jsonresponse = json.loads(response.content)
         self.assertEqual(jsonresponse['result']['success'], False)
-        self.assertEqual(jsonresponse['result']['msg'], 'too slow')
+        self.assertEqual(jsonresponse['result']['msg'], 'try again')
         attendances = self.student.get_attendances()
         self.assertEqual(attendances.count(), 0)
 
@@ -314,7 +314,7 @@ class RPCAPITests(TestCase):
 
         jsonresponse = json.loads(response.content)
         self.assertEqual(jsonresponse['result']['success'], False)
-        self.assertEqual(jsonresponse['result']['msg'], 'too slow')
+        self.assertEqual(jsonresponse['result']['msg'], 'try again')
         self.assertEqual(attendances.count(), 1)
         self.assertEqual(attendances[0].card_check, True)
         self.assertEqual(attendances[0].phone_check, False)

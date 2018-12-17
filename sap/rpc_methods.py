@@ -186,7 +186,6 @@ def phone_check(installation_uid):
     student = Student.objects.get(device=device)
 
     try:
-
         att = Attendance.objects.get(
             student=student,
             timestamp__gte=timezone.now() - datetime.timedelta(seconds=5))
@@ -194,7 +193,7 @@ def phone_check(installation_uid):
     except exceptions.ObjectDoesNotExist:
         r = {
             "success": False,
-            "msg": "too slow"
+            "msg": "try again"
         }
         return r
 
