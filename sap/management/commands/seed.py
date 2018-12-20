@@ -15,6 +15,7 @@ def generate_device_student():
     s = Student(
         name=seeder.faker.name(),
         card_uid=random.randint(1000000, 9999999),
+        student_id=random.randint(10000, 999999),
         email=seeder.faker.email(),
         device=d
     )
@@ -57,7 +58,7 @@ def seed():
 
     for e in range(10):
         s = Student(
-            name=seeder.faker.ean13(),
+            name=seeder.faker.name(),
             card_uid=random.randint(1000000, 9999999),
             email=seeder.faker.email(),
         )
