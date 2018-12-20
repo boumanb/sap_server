@@ -25,7 +25,7 @@ class Device(models.Model):
         self.save()
 
     def __str__(self):
-        return self.installation_uid
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 class Student(models.Model):
@@ -93,8 +93,12 @@ class Student(models.Model):
         else:
             return False
 
+    def get_attendances(self):
+        attendances = Attendance.objects.filter(student=self)
+        return attendances
+
     def __str__(self):
-        return self.name
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 class Teacher(models.Model):
@@ -108,7 +112,7 @@ class Teacher(models.Model):
         Attendance(student=student, college=college, phone_check=True, card_check=True)
 
     def __str__(self):
-        return self.name
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 class Course(models.Model):
@@ -129,7 +133,7 @@ class Course(models.Model):
                                until=dates[1])
 
             for x in days:
-                coll = Collage(
+                coll = College(
                     day=x,
                     begin_time=e[1],
                     end_time=e[2],
@@ -138,10 +142,14 @@ class Course(models.Model):
                 )
                 coll.save()
 
+    def get_colleges(self):
+        return College.objects.filter(course=self)
+
     def __str__(self):
-        return self.name
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
+# noinspection PyMethodMayBeStatic
 class Room(models.Model):
     name = models.CharField(max_length=200)
     reader_UID = models.CharField(max_length=200)
@@ -150,7 +158,7 @@ class Room(models.Model):
 
     def find_college(self):
         # Returns the current college held in the room
-        college = Collage.objects.get(
+        college = College.objects.get(
             day=date.today(),
             begin_time__lte=timezone.now(),
             end_time__gte=timezone.now())
@@ -158,21 +166,24 @@ class Room(models.Model):
         return college
 
     def __str__(self):
-        return self.name
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
-class Collage(models.Model):
+class College(models.Model):
     day = models.DateField(null=True)
     begin_time = models.TimeField(null=True)
     end_time = models.TimeField(null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
+
 
 class Attendance(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    college = models.ForeignKey(Collage, on_delete=models.CASCADE, unique=False, null=True)
+    college = models.ForeignKey(College, on_delete=models.CASCADE, unique=False, null=True)
     phone_check = models.BooleanField(default=False)
     card_check = models.BooleanField(default=False)
     phone = models.BooleanField(default=False)
@@ -181,3 +192,6 @@ class Attendance(models.Model):
     def attend_phone(self):
         self.phone_check = True
         self.save()
+
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)

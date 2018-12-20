@@ -171,9 +171,25 @@ def card_check(card_uid, reader_uid, **kwargs):
     :param reader_uid: the uid of the reader used.
     :return: OK/NOK
     """
-    student = Student.objects.get(card_uid=card_uid)
+
     room = Room.objects.get(reader_UID=reader_uid)
     college = room.find_college()
+
+    if not student:
+        r = {
+            "success": False,
+            "msg": "no student found"
+        }
+        return r
+
+    room = Room.objects.get(reader_UID=reader_uid)
+    if not room:
+        r = {
+            "success": False,
+            "msg": "no room found"
+        }
+        return r
+
 
     request = kwargs.get(REQUEST_KEY)
     ip_add = get_ip(request)
@@ -182,7 +198,6 @@ def card_check(card_uid, reader_uid, **kwargs):
 
     try:
         college = room.find_college()
-
     except exceptions.ObjectDoesNotExist:
         r = {
             "success": False,
@@ -213,7 +228,6 @@ def phone_check(installation_uid, **kwargs):
     logger.info("%s phone_check uid:%s ", ip_add, installation_uid)
 
     try:
-
         att = Attendance.objects.get(
             student=student,
             timestamp__gte=timezone.now() - datetime.timedelta(seconds=5))
@@ -221,7 +235,7 @@ def phone_check(installation_uid, **kwargs):
     except exceptions.ObjectDoesNotExist:
         r = {
             "success": False,
-            "msg": "too slow"
+            "msg": "try again"
         }
 
         return r

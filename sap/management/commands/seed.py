@@ -4,10 +4,10 @@ from sap.models import *
 import datetime
 import random
 
-
 seeder = Seed.seeder()
 
-def generateDeviceStudent():
+
+def generate_device_student():
     d = Device(
         installation_uid=seeder.faker.ean13()
     )
@@ -15,12 +15,14 @@ def generateDeviceStudent():
     s = Student(
         name=seeder.faker.name(),
         card_uid=random.randint(1000000, 9999999),
+        student_id=random.randint(10000, 999999),
         email=seeder.faker.email(),
         device=d
-        )
+    )
     s.save()
 
-def populateCourse():
+
+def populate_course():
     course = Course.objects.get(id=1)
     teacher = Teacher.objects.get(id=1)
 
@@ -31,8 +33,7 @@ def populateCourse():
         course.attendees.add(e)
 
 
-def generateCollages():
-
+def generate_colleges():
     course = Course.objects.get(id=1)
     room = Room.objects.get(id=1)
 
@@ -52,13 +53,12 @@ def generateCollages():
 
 
 def seed():
-
     for e in range(10):
-        generateDeviceStudent()
+        generate_device_student()
 
     for e in range(10):
         s = Student(
-            name=seeder.faker.ean13(),
+            name=seeder.faker.name(),
             card_uid=random.randint(1000000, 9999999),
             email=seeder.faker.email(),
         )
@@ -79,8 +79,8 @@ def seed():
         'name': lambda x: seeder.faker.catch_phrase(),
     })
     seeder.execute()
-    populateCourse()
-    generateCollages()
+    populate_course()
+    generate_colleges()
 
 
 class Command(BaseCommand):
