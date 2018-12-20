@@ -25,7 +25,7 @@ class Device(models.Model):
         self.save()
 
     def __str__(self):
-        return self.installation_uid
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 class Student(models.Model):
@@ -98,7 +98,7 @@ class Student(models.Model):
         return attendances
 
     def __str__(self):
-        return self.name
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 class Teacher(models.Model):
@@ -112,7 +112,7 @@ class Teacher(models.Model):
         Attendance(student=student, college=college, phone_check=True, card_check=True)
 
     def __str__(self):
-        return self.name
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 class Course(models.Model):
@@ -142,8 +142,11 @@ class Course(models.Model):
                 )
                 coll.save()
 
+    def get_colleges(self):
+        return College.objects.filter(course=self)
+
     def __str__(self):
-        return self.name
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 # noinspection PyMethodMayBeStatic
@@ -163,7 +166,7 @@ class Room(models.Model):
         return college
 
     def __str__(self):
-        return self.name
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 class College(models.Model):
@@ -172,6 +175,9 @@ class College(models.Model):
     end_time = models.TimeField(null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 class Attendance(models.Model):
@@ -186,3 +192,6 @@ class Attendance(models.Model):
     def attend_phone(self):
         self.phone_check = True
         self.save()
+
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
