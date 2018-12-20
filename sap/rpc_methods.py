@@ -1,14 +1,18 @@
 import datetime
 import secrets
+import logging
 
 from django.core import exceptions
 from django.utils import timezone
 from modernrpc.auth import set_authentication_predicate
 from modernrpc.core import rpc_method
+from modernrpc.core import REQUEST_KEY
+
 
 from sap.models import Device, Student, Room, Attendance
 from sap.rpc_auth import authenticate_by_token
 
+logger = logging.getLogger('api')
 
 @rpc_method
 def echo(text):
@@ -166,7 +170,7 @@ def card_check(card_uid, reader_uid):
 
 
 @rpc_method
-def phone_check(installation_uid):
+def phone_check(installation_uid, **kwargs):
     """
     Checks if the the attendance hits timewindow
     :param installation_uid: the installation_uid of the device
@@ -174,6 +178,13 @@ def phone_check(installation_uid):
     """
     device = Device.objects.get(installation_uid=installation_uid)
     student = Student.objects.get(device=device)
+    request = kwargs.get(REQUEST_KEY)
+    try:
+        ip_add = request.META.get('HTTP_X_FORWARDED_FOR')
+    except:
+        ip_add = request.META.get('REMOTE_ADDR')
+
+    logger.info("%s phone_check uid:%s ", ip_add, installation_uid)
 
     try:
 
@@ -186,6 +197,7 @@ def phone_check(installation_uid):
             "success": False,
             "msg": "too slow"
         }
+
         return r
 
     else:
