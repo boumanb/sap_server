@@ -65,7 +65,7 @@ class RPCAPITests(TestCase):
         d2 = datetime.date(year=now.year, month=now.month, day=31)
         t1 = datetime.time(hour=now.hour, minute=now.minute)
         t2 = datetime.time(hour=now_plus_10_min.hour, minute=now_plus_10_min.minute)
-        day_str = t1.strftime('%a')[:2].upper()
+        day_str = now.strftime('%a')[:2].upper()
         dates = (d1, d2)
         cls.course.make_colleges(cls.room, [(day_str, t1, t2)], dates)
 
