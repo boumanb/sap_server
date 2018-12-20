@@ -6,6 +6,9 @@ from dateutil import rrule
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Device(models.Model):
@@ -92,10 +95,13 @@ class Student(models.Model):
         else:
             return False
 
+    def __str__(self):
+        return self.student_nr
+
 
 class Teacher(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=200)
-    password = models.CharField(max_length=200)
     email = models.CharField(max_length=200, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -103,13 +109,15 @@ class Teacher(models.Model):
     def attend_student(self, student):
         Attendance(student=student, phone_check=True, card_check=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Course(models.Model):
     name = models.CharField(max_length=200)
     teacher = models.ManyToManyField(Teacher)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    attendees = models.ManyToManyField(Student)
 
     def make_colleges(self, room, times, dates):
         # Times is a list of tuples(weekday, starttime, endtime)
@@ -131,6 +139,9 @@ class Course(models.Model):
                 )
                 coll.save()
 
+    def __str__(self):
+        return self.name
+
 
 class Room(models.Model):
     name = models.CharField(max_length=200)
@@ -147,6 +158,9 @@ class Room(models.Model):
 
         return college
 
+    def __str__(self):
+        return self.name
+
 
 class Collage(models.Model):
     day = models.DateField(null=True)
@@ -154,6 +168,8 @@ class Collage(models.Model):
     end_time = models.TimeField(null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    attendees = models.ManyToManyField(Student)
 
 
 class Attendance(models.Model):

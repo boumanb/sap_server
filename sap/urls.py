@@ -17,13 +17,14 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 from modernrpc.views import RPCEntryPoint
-from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework.authtoken import views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^rpc/', RPCEntryPoint.as_view()),
     url(r'^rpc-doc/', RPCEntryPoint.as_view(enable_doc=True, enable_rpc=False)),
     path('api/', include('FrontEndAPI.urls')),
-    path('api-token-auth/', obtain_auth_token, name='api-token-auth'),
+    path('api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
     path('teacherportal/', include('TeacherPortal.urls')),
 ]

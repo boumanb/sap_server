@@ -1,0 +1,45 @@
+{% extends "teacherportal/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="col-12">
+        <div id="teacherSummary">
+            <div>
+                <legend class="border-bottom mb-4">Teacher info</legend>
+                <button type="submit" id="editTeacher" class="btn btn-info float-right">Edit Account</button>
+
+            </div>
+            <div class="media-body">
+                <table class="table ">
+                    <tr>
+                        <th scope="row">Username</th>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ user.teacher.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ user.teacher.name }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        $("#editTeacher").click(function (e) {
+            console.log('clicked');
+            $.ajax({
+                url: "http://127.0.0.1:8000{% url 'teacher_edit' %}",
+                success: function (data) {
+                    console.log('This was a succes but the append went wrong')
+                    $('#teacherSummary').html(data);
+                },
+                failure: function (data) {
+                    alert('Something went wrong try again later.');
+                }
+            });
+        });
+    </script>
+{% endblock content %}

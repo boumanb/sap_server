@@ -1,0 +1,13 @@
+{% extends "teacherportal/base.html" %}
+
+
+{% block content %}
+{% for student in students %}
+    <div class="col-sm-5 col-md-5 col-lg-5">
+        <h5>Student name: {{ student.name }}</h5>
+        <label>Student number: {{ student.student_nr }}</label>
+        <label>Student email: {{ student.email }}</label>
+        <button type="submit" class="btn btn-danger">Testing</button>
+    </div>
+{% endfor %}
+{% endblock %}

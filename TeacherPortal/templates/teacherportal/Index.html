@@ -1,17 +1,40 @@
-{% extends "base.html" %}
+{% extends "teacherportal/base.html" %}
 
 {% block title %}Index{% endblock %}
 
 {% block content %}
-<div class="col-12">
-<h2>Students</h2>
-{% for student in students %}
-    <div class="col-sm-5 col-md-5 col-lg-5">
-        <h5>Student name: {{ student.name }}</h5>
-        <label>Student number: {{ student.student_nr }}</label>
-        <label>Student email: {{ student.email }}</>
-        <button type="submit" class="btn btn-danger">Testing</button>
+    <div class="col-12">
+        <h2>Today Colleges on {% now "jS F Y" %}</h2>
+        <table id="collegeSummary" class="table table-hover">
+            <thead>
+            <tr>
+                <th>Room</th>
+                <th>Date and Time</th>
+                <th>College</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><a href="#"></a>Room 404</td>
+                <td>18-12-2018 10:00</td>
+                <td>Software Architecture</td>
+            </tr>
+            <tr>
+                <td><a href="#"></a>Room 201</td>
+                <td>18-12-2018 12:00</td>
+                <td>Network Security</td>
+            </tr>
+            </tbody>
+        </table>
+
     </div>
-{% endfor %}
-</div>
+
+    <script>
+        $('#collegeSummary tr').click(function () {
+            var href = $(this).find("a").attr("href");
+            if (href) {
+                window.location = href;
+            }
+        });
+    </script>
 {% endblock %}
