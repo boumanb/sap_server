@@ -16,6 +16,7 @@ logger = logging.getLogger('api')
 
 
 def get_ip(request):
+    # Returns the client ip address from the request.
     try:
         ip_add = request.META.get('HTTP_X_FORWARDED_FOR')
     except:

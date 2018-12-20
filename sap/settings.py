@@ -175,7 +175,7 @@ LOGGING = {
             'handlers': ['api_log'],
         },
         'api_error': {
-            'handlers': ['error'],
+            'handlers': ['error_log'],
         },
     }
 }
