@@ -157,6 +157,12 @@ LOGGING = {
             'formatter': 'simple',
             'filename': 'api.log'
             },
+        'error_log': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'formatter': 'simple',
+            'filename': 'error.log'
+        },
     },
 
     'root': {
@@ -167,6 +173,9 @@ LOGGING = {
     'loggers': {
         'api': {
             'handlers': ['api_log'],
+        },
+        'api_error': {
+            'handlers': ['error'],
         },
     }
 }
