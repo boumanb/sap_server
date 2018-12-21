@@ -6,11 +6,10 @@ def authenticate_by_token(request):
     if token is None:
         return False
 
-    q = Student.objects.filter(api_token=token)
-    if not q:
+    student = Student.get_by_apitoken(token)
+    if not student:
         return False
     else:
-        student = q[0]
         if student.check_token_valid():
             return True
         else:

@@ -11,7 +11,11 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import sys
+
 from decouple import config
+
+TEST = 'test' in sys.argv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -51,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'sap.middleware.rate_limiting_middleware.RateLimitingMiddleware',
 ]
 
 ROOT_URLCONF = 'sap.urls'
@@ -123,6 +128,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': BASE_DIR + '/cache/rate_limiting',
+    }
+}
 
 MODERNRPC_METHODS_MODULES = [
     'sap.rpc_methods'
@@ -134,3 +145,48 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_BACKEND = config('EMAIL_BACKEND')
 EMAIL_USE_TLS = True
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] %(levelname)s %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+            },
+        'api_log': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'formatter': 'simple',
+            'filename': 'api.log'
+            },
+        'error_log': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'formatter': 'simple',
+            'filename': 'error.log'
+        },
+    },
+
+    'root': {
+        'level': 'INFO',
+        'handlers': ['console'],
+    },
+
+    'loggers': {
+        'api': {
+            'handlers': ['api_log'],
+        },
+        'api_error': {
+            'handlers': ['error_log'],
+        },
+    }
+}

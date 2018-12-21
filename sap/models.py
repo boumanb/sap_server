@@ -25,7 +25,7 @@ class Device(models.Model):
         self.save()
 
     def __str__(self):
-        return self.installation_uid
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 class Student(models.Model):
@@ -59,10 +59,18 @@ class Student(models.Model):
     def verify_registration(self, sent_register_digits, installation_uid):
         if self.register_device_digits_valid_till > timezone.now():
             return "Registration time expired"
-        if self.register_device_digits == sent_register_digits and bcrypt.checkpw(installation_uid.encode('utf-8'), self.device.installation_uid.encode('utf-8')):
+        if self.register_device_digits == sent_register_digits and bcrypt.checkpw(installation_uid.encode('utf-8'),
+                                                                                  self.device.installation_uid.encode(
+                                                                                          'utf-8')):
             self.device.confirmed = True
             self.device.save()
             return True
+
+    def verify_device_installation_uid(self, installation_uid):
+        if bcrypt.checkpw(installation_uid.encode('utf-8'), self.device.installation_uid.encode('utf-8')):
+            return True
+        else:
+            return False
 
     def send_registration_mail(self, installation_uid):
         if self.has_confirmed_device():
@@ -97,8 +105,24 @@ class Student(models.Model):
         attendances = Attendance.objects.filter(student=self)
         return attendances
 
+    @staticmethod
+    def get_by_apitoken(api_token=None, **kwargs):
+        if kwargs.get('request') is not None and api_token is None:
+            request = kwargs.get('request')
+            api_token = request.META.get("HTTP_AUTHORIZATION")
+            if api_token is None:
+                return None
+            else:
+                return Student.get_by_apitoken(api_token)
+        else:
+            student_qs = Student.objects.filter(api_token=api_token)
+            if not student_qs:
+                return None
+            else:
+                return student_qs[0]
+
     def __str__(self):
-        return self.name
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 class Teacher(models.Model):
@@ -112,7 +136,7 @@ class Teacher(models.Model):
         Attendance(student=student, college=college, phone_check=True, card_check=True)
 
     def __str__(self):
-        return self.name
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 class Course(models.Model):
@@ -125,8 +149,18 @@ class Course(models.Model):
     def make_colleges(self, room, times, dates):
         # Times is a list of tuples(weekday, starttime, endtime)
         # Dates is tuple of (startdate, enddate)
+
+        options = {"MO": rrule.MO,
+                   "TU": rrule.TU,
+                   "WE": rrule.WE,
+                   "TH": rrule.TH,
+                   "FR": rrule.FR,
+                   "SA": rrule.SA,
+                   "SU": rrule.SU,
+                   }
+
         for e in times:
-            weekday = eval("rrule." + e[0])
+            weekday = options[e[0]]
             days = rrule.rrule(rrule.DAILY,
                                byweekday=weekday,
                                dtstart=dates[0],
@@ -142,8 +176,11 @@ class Course(models.Model):
                 )
                 coll.save()
 
+    def get_colleges(self):
+        return College.objects.filter(course=self)
+
     def __str__(self):
-        return self.name
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 # noinspection PyMethodMayBeStatic
@@ -163,7 +200,7 @@ class Room(models.Model):
         return college
 
     def __str__(self):
-        return self.name
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 class College(models.Model):
@@ -172,6 +209,9 @@ class College(models.Model):
     end_time = models.TimeField(null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
 
 
 class Attendance(models.Model):
@@ -186,3 +226,6 @@ class Attendance(models.Model):
     def attend_phone(self):
         self.phone_check = True
         self.save()
+
+    def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)

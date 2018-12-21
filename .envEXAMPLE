@@ -9,3 +9,7 @@ EMAIL_HOST_USER=nsasapattendance@gmail.com
 EMAIL_HOST_PASSWORD=pass
 EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
 ALLOWED_HOSTS=app.nsa-sap.com,0.0.0.0,127.0.0.1
+RL_TOKEN_MAX_AMOUNT=10
+RL_TOKEN_REFILL_TIME=10
+RL_TOKEN_REFILL_AMOUNT=1
+RL_EXCLUDED_RPC_METHODS=login,echo
