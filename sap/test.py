@@ -89,23 +89,7 @@ class RPCAPITests(TestCase):
         assert jsonresponse['id'] == 0
 
     def test_echo_auth_valid(self):
-        payload = {
-            "method": "login",
-            "params": ["123", "1234"],
-            "jsonrpc": "2.0",
-            "id": 0,
-        }
-
-        response = self.client.post(self.url, data=payload, content_type='application/json')
-        jsonresponse = json.loads(response.content)
-
-        self.student.refresh_from_db()
-
-        assert jsonresponse['result']['valid_till']
-        assert jsonresponse['result']['token']
-        assert jsonresponse['jsonrpc']
-        assert jsonresponse['id'] == 0
-        assert jsonresponse['result']['token'] == self.student.api_token
+        api_token = self.get_api_token()
 
         payload = {
             "method": "echo_with_auth",
@@ -115,7 +99,7 @@ class RPCAPITests(TestCase):
         }
 
         response = self.client.post(self.url, data=payload, content_type='application/json',
-                                    **{"HTTP_AUTHORIZATION": jsonresponse['result']['token']})
+                                    **{"HTTP_AUTHORIZATION": api_token})
         jsonresponse = json.loads(response.content)
 
         assert jsonresponse['result'] == 'echome!'
@@ -312,3 +296,14 @@ class RPCAPITests(TestCase):
         self.assertEqual(attendances[0].card_check, True)
         self.assertEqual(attendances[0].phone_check, False)
 
+    def get_api_token(self):
+        payload = {
+            "method": "login",
+            "params": ["123", "1234"],
+            "jsonrpc": "2.0",
+            "id": 0,
+        }
+
+        response = self.client.post(self.url, data=payload, content_type='application/json')
+        jsonresponse = json.loads(response.content)
+        return jsonresponse['result']['token']
