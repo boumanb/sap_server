@@ -1,6 +1,7 @@
 import json
 import time
 
+from django.conf import settings
 from decouple import config
 from django.core.cache import cache
 from django.http import HttpResponse
@@ -9,10 +10,16 @@ from sap.models import Student
 
 
 class RateLimitingMiddleware(object):
-    max_amount = config('RL_TOKEN_MAX_AMOUNT', default=10, cast=int)
-    refill_time = config('RL_TOKEN_REFILL_TIME', default=10, cast=int)
-    refill_amount = config('RL_TOKEN_REFILL_AMOUNT', default=1, cast=int)
-    excluded_methods = config('RL_EXCLUDED_RPC_METHODS', default='login')
+    if settings.TEST is True:
+        max_amount = config('RL_TOKEN_MAX_AMOUNT', default=1000, cast=int)
+        refill_time = config('RL_TOKEN_REFILL_TIME', default=1, cast=int)
+        refill_amount = config('RL_TOKEN_REFILL_AMOUNT', default=1000, cast=int)
+        excluded_methods = config('RL_EXCLUDED_RPC_METHODS', default='login')
+    else:
+        max_amount = config('RL_TOKEN_MAX_AMOUNT', default=10, cast=int)
+        refill_time = config('RL_TOKEN_REFILL_TIME', default=10, cast=int)
+        refill_amount = config('RL_TOKEN_REFILL_AMOUNT', default=1, cast=int)
+        excluded_methods = config('RL_EXCLUDED_RPC_METHODS', default='login')
 
     def __init__(self, get_response):
         self.get_response = get_response

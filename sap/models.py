@@ -59,7 +59,9 @@ class Student(models.Model):
     def verify_registration(self, sent_register_digits, installation_uid):
         if self.register_device_digits_valid_till > timezone.now():
             return "Registration time expired"
-        if self.register_device_digits == sent_register_digits and bcrypt.checkpw(installation_uid.encode('utf-8'), self.device.installation_uid.encode('utf-8')):
+        if self.register_device_digits == sent_register_digits and bcrypt.checkpw(installation_uid.encode('utf-8'),
+                                                                                  self.device.installation_uid.encode(
+                                                                                          'utf-8')):
             self.device.confirmed = True
             self.device.save()
             return True
@@ -104,12 +106,20 @@ class Student(models.Model):
         return attendances
 
     @staticmethod
-    def get_by_apitoken(api_token):
-        student_qs = Student.objects.filter(api_token=api_token)
-        if not student_qs:
-            return None
+    def get_by_apitoken(api_token=None, **kwargs):
+        if kwargs.get('request') is not None and api_token is None:
+            request = kwargs.get('request')
+            api_token = request.META.get("HTTP_AUTHORIZATION")
+            if api_token is None:
+                return None
+            else:
+                return Student.get_by_apitoken(api_token)
         else:
-            return student_qs[0]
+            student_qs = Student.objects.filter(api_token=api_token)
+            if not student_qs:
+                return None
+            else:
+                return student_qs[0]
 
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)

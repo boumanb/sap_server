@@ -1,14 +1,14 @@
 import datetime
-import secrets
 import logging
+import secrets
 
 from django.core import exceptions
 from django.utils import timezone
 from modernrpc.auth import set_authentication_predicate
-from modernrpc.core import rpc_method
 from modernrpc.core import REQUEST_KEY
+from modernrpc.core import rpc_method
 
-from sap.models import Device, Student, Room, Attendance
+from sap.models import Student, Room, Attendance
 from sap.rpc_auth import authenticate_by_token
 
 logger = logging.getLogger('api')
@@ -51,6 +51,7 @@ def echo_with_auth(text, ):
 def login(installation_uid, student_nr, **kwargs):
     """
     Returns a API token for further API usage
+    :param student_nr: student number
     :param installation_uid: installation UID of Android app
     :return: JSON containing token
     """
@@ -219,9 +220,8 @@ def phone_check(installation_uid, **kwargs):
     :param installation_uid: the installation_uid of the device
     :return: OK/NOK
     """
-    device = Device.objects.get(installation_uid=installation_uid)
-    student = Student.objects.get(device=device)
     request = kwargs.get(REQUEST_KEY)
+    student = Student.get_by_apitoken(request=request)
     ip_add = get_ip(request)
 
     logger.info("%s phone_check uid:%s ", ip_add, installation_uid)
