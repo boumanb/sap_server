@@ -173,30 +173,29 @@ def card_check(card_uid, reader_uid, **kwargs):
     :return: OK/NOK
     """
 
-    room = Room.objects.get(reader_UID=reader_uid)
-    student = Student.objects.get(card_uid=card_uid)
-    college = room.find_college()
+    request = kwargs.get(REQUEST_KEY)
+    ip_add = get_ip(request)
 
-    if not student:
+    logger.info("%s card_check Card:%s Reader:%s", ip_add, card_uid, reader_uid)
+
+    try:
+        student = Student.objects.get(card_uid=card_uid)
+
+    except exceptions.ObjectDoesNotExist:
         r = {
             "success": False,
             "msg": "no student found"
         }
         return r
 
-    room = Room.objects.get(reader_UID=reader_uid)
-    if not room:
+    try:
+        room = Room.objects.get(reader_UID=reader_uid)
+    except exceptions.ObjectDoesNotExist:
         r = {
             "success": False,
             "msg": "no room found"
         }
         return r
-
-
-    request = kwargs.get(REQUEST_KEY)
-    ip_add = get_ip(request)
-
-    logger.info("%s card_check Card:%s Reader:%s", ip_add, card_uid, reader_uid)
 
     try:
         college = room.find_college()
