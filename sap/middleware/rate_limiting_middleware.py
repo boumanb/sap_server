@@ -1,9 +1,7 @@
 import json
-import time
 
-from django.conf import settings
 from decouple import config
-from django.core.cache import cache
+from django.conf import settings
 from django.http import HttpResponse
 
 from sap.models import Student
