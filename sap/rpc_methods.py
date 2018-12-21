@@ -174,6 +174,7 @@ def card_check(card_uid, reader_uid, **kwargs):
     """
 
     room = Room.objects.get(reader_UID=reader_uid)
+    student = Student.objects.get(card_uid=card_uid)
     college = room.find_college()
 
     if not student:
