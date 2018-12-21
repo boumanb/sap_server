@@ -64,6 +64,12 @@ class Student(models.Model):
             self.device.save()
             return True
 
+    def verify_device_installation_uid(self, installation_uid):
+        if bcrypt.checkpw(installation_uid.encode('utf-8'), self.device.installation_uid.encode('utf-8')):
+            return True
+        else:
+            return False
+
     def send_registration_mail(self, installation_uid):
         if self.has_confirmed_device():
             return False
@@ -96,6 +102,14 @@ class Student(models.Model):
     def get_attendances(self):
         attendances = Attendance.objects.filter(student=self)
         return attendances
+
+    @staticmethod
+    def get_by_apitoken(api_token):
+        student_qs = Student.objects.filter(api_token=api_token)
+        if not student_qs:
+            return None
+        else:
+            return student_qs[0]
 
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)

@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'sap.middleware.rate_limiting_middleware.RateLimitingMiddleware',
 ]
 
 ROOT_URLCONF = 'sap.urls'
@@ -123,6 +124,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': BASE_DIR + '/cache/rate_limiting',
+    }
+}
 
 MODERNRPC_METHODS_MODULES = [
     'sap.rpc_methods'

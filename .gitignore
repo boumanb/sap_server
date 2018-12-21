@@ -10,3 +10,4 @@ reports/
 .scannerwork/
 sonar-project.properties
 coverage.xml
+cache

@@ -34,26 +34,17 @@ def echo_with_auth(text):
 
 
 @rpc_method
-def login(installation_uid):
+def login(installation_uid, student_nr):
     """
     Returns a API token for further API usage
     :param installation_uid: installation UID of Android app
     :return: JSON containing token
     """
-    q = Device.objects.filter(installation_uid=installation_uid)
+    q = Student.objects.filter(student_nr=student_nr)
     if not q:
         r = {
             "success": False,
-            "msg": "no device found"
-        }
-        return r
-
-    device_id = q[0].id
-    q = Student.objects.filter(device=device_id)
-    if not q:
-        r = {
-            "success": False,
-            "msg": "no student found for device"
+            "msg": "no student found"
         }
         return r
 
@@ -62,6 +53,13 @@ def login(installation_uid):
         r = {
             "success": False,
             "msg": "device not confirmed"
+        }
+        return r
+
+    if not student.verify_device_installation_uid(installation_uid):
+        r = {
+            "success": False,
+            "msg": "installation_uid not matching with registered device"
         }
         return r
 
