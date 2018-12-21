@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'sap.middleware.rate_limiting_middleware.RateLimitingMiddleware',
+    'sap.middleware.rate_limiting_middleware.RateLimitingMiddleware',
 ]
 
 ROOT_URLCONF = 'sap.urls'
