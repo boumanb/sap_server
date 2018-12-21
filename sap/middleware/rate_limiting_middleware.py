@@ -4,6 +4,7 @@ from decouple import config
 from django.conf import settings
 from django.http import HttpResponse
 
+from sap.middleware.bucket import Bucket
 from sap.models import Student
 
 
@@ -34,35 +35,9 @@ class RateLimitingMiddleware(object):
         if json.loads(request.body)['method'] in self.excluded_methods:
             return None
         student = Student.get_by_apitoken(request.META.get("HTTP_AUTHORIZATION"))
-        if cache.get(student.id) is None:
-            bucket = {
-                "tokens": self.max_amount - 1,
-                "last_update": time.time()
-            }
-            cache.set(student.id, json.dumps(bucket))
+        bucket = Bucket(student.id)
+        if bucket.reduce(tokens=1) is False:
+            return HttpResponse("Too many requests", status=429, reason='Too many requests')
         else:
-            bucket = cache.get(student.id)
-            reduced_bucket = self.reduce(bucket, tokens=1)
-            if reduced_bucket is False:
-                return HttpResponse("Too many requests", status=429, reason='Too many requests')
-            else:
-                cache.set(student.id, json.dumps(reduced_bucket))
+            bucket.save()
 
-    def refill_count(self, bucket):
-        return int(((time.time() - bucket['last_update']) / self.refill_time))
-
-    def reduce(self, bucket, **kwargs):
-        bucket = json.loads(bucket)
-        tokens = kwargs.get('tokens', 1)
-        refill_count = self.refill_count(bucket)
-        if (bucket['tokens'] + (refill_count * self.refill_amount)) > self.max_amount:
-            bucket['tokens'] = self.max_amount
-        else:
-            bucket['tokens'] += refill_count * self.refill_amount
-        bucket['last_update'] += refill_count * self.refill_time
-
-        if tokens > bucket['tokens']:
-            return False
-
-        bucket['tokens'] -= tokens
-        return bucket
