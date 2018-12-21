@@ -1,15 +1,14 @@
 import datetime
-import secrets
 import logging
+import secrets
 
 from django.core import exceptions
 from django.utils import timezone
 from modernrpc.auth import set_authentication_predicate
-from modernrpc.core import rpc_method
 from modernrpc.core import REQUEST_KEY
+from modernrpc.core import rpc_method
 
-
-from sap.models import Device, Student, Room, Attendance
+from sap.models import Student, Room, Attendance
 from sap.rpc_auth import authenticate_by_token
 
 logger = logging.getLogger('api')
@@ -24,6 +23,7 @@ def get_ip(request):
 
     return ip_add
 
+
 @rpc_method
 def echo(text):
     """
@@ -37,7 +37,7 @@ def echo(text):
 
 @rpc_method
 @set_authentication_predicate(authenticate_by_token)
-def echo_with_auth(text,):
+def echo_with_auth(text, ):
     """
     Echoes the sent in string. For testing purpose.
     :param text: string containing text.
@@ -48,32 +48,24 @@ def echo_with_auth(text,):
 
 
 @rpc_method
-def login(installation_uid, **kwargs):
+def login(installation_uid, student_nr, **kwargs):
     """
     Returns a API token for further API usage
+    :param student_nr: student number
     :param installation_uid: installation UID of Android app
     :return: JSON containing token
     """
+    q = Student.objects.filter(student_nr=student_nr)
 
     request = kwargs.get(REQUEST_KEY)
     ip_add = get_ip(request)
 
     logger.info("%s login install_uid:%s", ip_add, installation_uid)
 
-    q = Device.objects.filter(installation_uid=installation_uid)
     if not q:
         r = {
             "success": False,
-            "msg": "no device found"
-        }
-        return r
-
-    device_id = q[0].id
-    q = Student.objects.filter(device=device_id)
-    if not q:
-        r = {
-            "success": False,
-            "msg": "no student found for device"
+            "msg": "no student found"
         }
         return r
 
@@ -82,6 +74,13 @@ def login(installation_uid, **kwargs):
         r = {
             "success": False,
             "msg": "device not confirmed"
+        }
+        return r
+
+    if not student.verify_device_installation_uid(installation_uid):
+        r = {
+            "success": False,
+            "msg": "installation_uid not matching with registered device"
         }
         return r
 
@@ -221,9 +220,8 @@ def phone_check(installation_uid, **kwargs):
     :param installation_uid: the installation_uid of the device
     :return: OK/NOK
     """
-    device = Device.objects.get(installation_uid=installation_uid)
-    student = Student.objects.get(device=device)
     request = kwargs.get(REQUEST_KEY)
+    student = Student.get_by_apitoken(request=request)
     ip_add = get_ip(request)
 
     logger.info("%s phone_check uid:%s ", ip_add, installation_uid)
