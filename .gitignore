@@ -11,3 +11,4 @@ reports/
 sonar-project.properties
 coverage.xml
 cache
+*.log

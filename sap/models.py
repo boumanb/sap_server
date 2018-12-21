@@ -139,8 +139,18 @@ class Course(models.Model):
     def make_colleges(self, room, times, dates):
         # Times is a list of tuples(weekday, starttime, endtime)
         # Dates is tuple of (startdate, enddate)
+
+        options = {"MO": rrule.MO,
+                   "TU": rrule.TU,
+                   "WE": rrule.WE,
+                   "TH": rrule.TH,
+                   "FR": rrule.FR,
+                   "SA": rrule.SA,
+                   "SU": rrule.SU,
+                   }
+
         for e in times:
-            weekday = eval("rrule." + e[0])
+            weekday = options[e[0]]
             days = rrule.rrule(rrule.DAILY,
                                byweekday=weekday,
                                dtstart=dates[0],

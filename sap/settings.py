@@ -141,3 +141,48 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_BACKEND = config('EMAIL_BACKEND')
 EMAIL_USE_TLS = True
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] %(levelname)s %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+            },
+        'api_log': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'formatter': 'simple',
+            'filename': 'api.log'
+            },
+        'error_log': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'formatter': 'simple',
+            'filename': 'error.log'
+        },
+    },
+
+    'root': {
+        'level': 'INFO',
+        'handlers': ['console'],
+    },
+
+    'loggers': {
+        'api': {
+            'handlers': ['api_log'],
+        },
+        'api_error': {
+            'handlers': ['error_log'],
+        },
+    }
+}
