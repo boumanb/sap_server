@@ -7,11 +7,8 @@ def authenticate_by_token(request):
         return False
 
     student = Student.get_by_apitoken(token)
-    if not student:
+    if not student or student.check_token_valid() is False:
         return False
     else:
-        if student.check_token_valid():
-            return True
-        else:
-            return False
+        return True
 
