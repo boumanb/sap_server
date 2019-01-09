@@ -1,13 +1,12 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
+from django.core import serializers
 from rest_framework.decorators import api_view, renderer_classes
-from rest_framework.renderers import JSONRenderer
 from rest_framework.views import APIView, Response
-from rest_framework import viewsets, permissions, generics
+from rest_framework import viewsets, permissions, generics, status
 from sap.models import Student, Collage, Course, Teacher, Attendance, Room
 from .serializers import StudentSerializer, CollegeSerializer, CourseSerializer, TeacherSerializer, \
-    AttendanceSerializer, RoomSerializer
-import datetime
+    AttendanceSerializer, RoomSerializer, ScheduleSerializer
+from django.forms.models import model_to_dict
 
 
 class StudentView(viewsets.ModelViewSet):
@@ -31,22 +30,42 @@ class TeacherView(viewsets.ModelViewSet):
     serializer_class = TeacherSerializer
 
 
-class AttendanceView(viewsets.ModelViewSet):
-    queryset = Attendance.objects.all()
-    serializer_class = AttendanceSerializer
-
-
 class RoomView(viewsets.ModelViewSet):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
 
 class ScheduleView(generics.ListAPIView):
-    serializer_class = CollegeSerializer
+    serializer_class = ScheduleSerializer
 
     def get_queryset(self):
-        dt = datetime.datetime.today()
-        str_time = dt.strftime("%H:%M:%S")
-        str_date = dt.strftime("%Y-%m-%d")
-        username = self.kwargs['userid']
-        return Collage.objects.filter(teacher_id=username, day=str_date, begin_time__gte=str_time,)
+        teacher = self.kwargs['userid']
+        return Collage.objects.filter(teacher_id=teacher)
+
+
+class AttendanceSummaryView(generics.ListAPIView):
+    serializer_class = AttendanceSerializer
+
+    def get_queryset(self):
+        collegeid = self.kwargs['collegeid']
+        return Attendance.objects.filter(college_id=collegeid)
+
+
+@api_view(['PUT'])
+def set_attendance_student(self, collegeid, studentid):
+    try:
+        student = Student.objects.filter(student_nr=studentid).get()
+        attend = Attendance.objects.filter(student_id=student.pk, college_id=collegeid).get()
+        confirm = Attendance(student=student, phone_check=True, card_check=True, college_id=collegeid)
+        serializer = AttendanceSerializer(attend, data=model_to_dict(confirm))
+        if serializer.is_valid():
+            serializer.save()
+            attendances = Attendance.objects.filter(college_id=collegeid)
+            att_response = serializers.serialize('json', attendances)
+            context = {"success": "student succesfully saved", "attendances": att_response, "collegeid": collegeid}
+            return Response(context, status=status.HTTP_200_OK)
+        context = {"errormsg": "Something went wrong during saving please try again or contact the system admin"}
+        return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Student.DoesNotExist or Teacher.DoesNotExist:
+        context = {"errormsg": "Student does not exist"}
+        return Response(context, status=status.HTTP_404_NOT_FOUND)

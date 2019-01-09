@@ -1,40 +1,36 @@
 {% extends "teacherportal/base.html" %}
 
-{% block title %}Index{% endblock %}
-
 {% block content %}
     <div class="col-12">
         <h2>Today Colleges on {% now "jS F Y" %}</h2>
-        <table id="collegeSummary" class="table table-hover">
+        <table class="table table-hover">
             <thead>
             <tr>
-                <th>Room</th>
-                <th>Date and Time</th>
-                <th>College</th>
+                <td>Room</td>
+                <td>Date</td>
+                <td>Begin time</td>
+                <td>End time</td>
+                <td>College</td>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td><a href="#"></a>Room 404</td>
-                <td>18-12-2018 10:00</td>
-                <td>Software Architecture</td>
-            </tr>
-            <tr>
-                <td><a href="#"></a>Room 201</td>
-                <td>18-12-2018 12:00</td>
-                <td>Network Security</td>
-            </tr>
+            {% for schedule in schedules %}
+                <tr class='clickable-row' id="{{ schedule.course.id }}">
+                    <td>{{ schedule.room }}</td>
+                    <td>{{ schedule.day }}</td>
+                    <td>{{ schedule.begin_time }}</td>
+                    <td>{{ schedule.end_time }}</td>
+                    <td>{{ schedule.course.name }}</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
-
     </div>
 
     <script>
-        $('#collegeSummary tr').click(function () {
-            var href = $(this).find("a").attr("href");
-            if (href) {
-                window.location = href;
-            }
+        $(".clickable-row").click(function () {
+            courseId = $(this).closest('tr').attr('id');
+            window.location = "http://127.0.0.1:8000/teacherportal/attendance_summary/ "+ courseId + "/";
         });
     </script>
 {% endblock %}

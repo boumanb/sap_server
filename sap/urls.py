@@ -25,6 +25,5 @@ urlpatterns = [
     url(r'^rpc/', RPCEntryPoint.as_view()),
     url(r'^rpc-doc/', RPCEntryPoint.as_view(enable_doc=True, enable_rpc=False)),
     path('api/', include('FrontEndAPI.urls')),
-    path('api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
     path('teacherportal/', include('TeacherPortal.urls')),
 ]

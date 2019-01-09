@@ -7,11 +7,12 @@ router.register('Students', views.StudentView)
 router.register('Colleges', views.CollegeView, base_name='Colleges')
 router.register('Courses', views.CourseView)
 router.register('Teacher', views.TeacherView)
-router.register('Attendances', views.AttendanceView)
 router.register('Rooms', views.RoomView)
 
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('Schedule/<userid>/', views.ScheduleView.as_view()),
+    path('Schedules/<userid>/', views.ScheduleView.as_view()),
+    path('Attendances/<collegeid>/', views.AttendanceSummaryView.as_view()),
+    path('SetAttendance/<collegeid>/<studentid>/', views.set_attendance_student)
 ]

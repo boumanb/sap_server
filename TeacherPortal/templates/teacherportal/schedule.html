@@ -3,7 +3,7 @@
 {% block content %}
     <div class="col-12">
         <h2>Schedule page</h2>
-        <table class="table table-hover">
+        <table class="table">
             <thead>
             <tr>
                 <td>Room</td>
@@ -16,11 +16,15 @@
             <tbody>
             {% for schedule in schedules %}
                 <tr>
-                    <td>{{  schedule.room.name }}</td>
+                    <td>{{schedule.room}}</td>
                     <td>{{schedule.day}}</td>
                     <td>{{schedule.begin_time}}</td>
                     <td>{{schedule.end_time}}</td>
                     <td>{{schedule.course.name}}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <th colspan="5">There are no colleges</th>
                 </tr>
             {% endfor %}
             </tbody>

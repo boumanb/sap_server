@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.conf.urls.static import static
+from django.conf.urls import handler404, handler500
 from django.urls import path, include
 from users import views as user_views
 from . import views
@@ -17,7 +17,12 @@ urlpatterns = [
      path('teacher/teacher_edit', user_views.teacher_edit, name="teacher_edit"),
 
 
-     path('schedule/', views.schedule, name="schedule")
+     path('schedule/', views.schedule, name="schedule"),
+     path('attendance_summary/<collegeid>/', views.get_attendance_summary, name="attendance_summary"),
+     path('set_student_attendance/<collegeid>/<studentid>/', views.set_student_attendance, name="set_student_attendance")
 
 
 ]
+
+handler404 = views.handler404
+handler500 = views.handler500

@@ -2,12 +2,95 @@
 
 
 {% block content %}
-{% for student in students %}
-    <div class="col-sm-5 col-md-5 col-lg-5">
-        <h5>Student name: {{ student.name }}</h5>
-        <label>Student number: {{ student.student_nr }}</label>
-        <label>Student email: {{ student.email }}</label>
-        <button type="submit" class="btn btn-danger">Testing</button>
+    <div class="col-12 attendanceSum">
+
+        <div id="modalConfirm" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Student present</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure that the student is present?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="modalSave" type="button" class="btn btn-primary">Student present</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <input id="SetAttendance" class="btn btn-outline-info" type="submit" value="Set attendance">
+        </div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Studentnumber</th>
+                <th>Student name</th>
+                <th>Phone check</th>
+                <th colspan="2">Card check</th>
+            </tr>
+            </thead>
+            <tbody class="tbodyAttend">
+            {% for attendee in attendances %}
+                {% if attendee.card_check and attendee.phone_check %}
+                    <tr class="table-success">
+                        <td>{{ attendee.student.student_nr }}</td>
+                        <td>{{ attendee.student.name }}</td>
+                        <td>{{ attendee.phone_check }}</td>
+                        <td>{{ attendee.card_check }}</td>
+                        <td></td>
+                    </tr>
+                {% else %}
+                    <tr class="table-danger" id="{{ attendee.student.student_nr }}">
+                        <td id="studentNumber">{{ attendee.student.student_nr }}</td>
+                        <td>{{ attendee.student.name }}</td>
+                        <td>{{ attendee.phone_check }}</td>
+                        <td>{{ attendee.card_check }}</td>
+                        <td>
+                            <button style="display:none;" type="button" class="btn btn-outline-primary btn-sm attend">
+                                Present
+                            </button>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
-{% endfor %}
+
+    <script>
+        $('#SetAttendance').click(function () {
+            $('.attend').toggle();
+        });
+
+        $('.attend').click(function (e) {
+            studentid = $(this).closest('tr').attr('id');
+            collegeid = {{ collegeid }};
+            $('#modalConfirm').modal('show');
+
+            $('#modalSave').click(function (e) {
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/teacherportal/set_student_attendance/' + collegeid + '/' + studentid + '/',
+                    success: function (data) {
+                        if (data.success) {
+                            $('#modalConfirm').modal('hide');
+                            location.reload();
+                        } else {
+                            alert(data.errormsg);
+                        }
+                    }
+
+                });
+            });
+
+        });
+
+
+    </script>
 {% endblock %}
