@@ -21,14 +21,15 @@ def index(request):
     str_date = dt.strftime("%Y-%m-%d")
     str_time = dt.strftime("%H:%M:%S")
     t_list = []
-    print('dd')
     for sch in schedules['results']:
+        print(sch)
         if sch['day'] == str_date and sch['begin_time'] >= str_time:
             t_list.append(sch)
 
     context = {
         'schedules': t_list,
     }
+    print(t_list)
     return render(request, 'teacherportal/index.html', context)
 
 
@@ -36,18 +37,24 @@ def index(request):
 @login_required
 def schedule(request):
     user = request.user
+    number = str(request.GET.get('page', '1'))
     token = Token.objects.get(user=user)
-    get_schedule = requests.get(api_url + '/Schedules/' + str(user.teacher.pk) + '/?page=' + str(1),
-                                headers={'Authorization': 'token ' + token.key})
+    get_schedule = requests.get(
+        api_url + '/Schedules/' + str(user.teacher.pk) + '/?page=' + number,
+        headers={'Authorization': 'token ' + token.key})
     schedules = get_schedule.json()
-    page_next = 0
-    page_previous = 0
+    page_next = None
+    page_previous = None
 
-    if schedules['next'] is not None:
-        page_next = get_page_number(schedules['next'])
-
-    if schedules['previous'] is not None:
-        page_previous = get_page_number(schedules['previous'])
+    # if schedules['next']:ddd
+    #     print(schedules['next'])
+    #     page_next = get_page_number(schedules['next'])
+    #
+    # if schedules['previous']:
+    #     page_previous = get_page_number(schedules['previous'])
+    #
+    # print('next value' + str(page_next))
+    # print('prev value' + str(page_previous))
 
     context = {
         'schedules': schedules['results'],
@@ -55,7 +62,6 @@ def schedule(request):
         'next': page_next,
         'previous': page_previous,
     }
-    print('test wanneer ik aangeroepen wordt')
     return render(request, 'teacherportal/schedule.html', context)
 
 
@@ -126,4 +132,10 @@ def check_teacher(user, collegeid):
 
 def get_page_number(url):
     page_number = url.split("=", 1)
-    return page_number[1]
+
+    if not page_number[1]:
+        print('ik heb een waarde in de array')
+        return str(page_number[1])
+    else:
+        print('ik heb geen waarde in de array')
+        return str(2)
