@@ -1,12 +1,18 @@
-from django.http import HttpResponse
-from django.core import serializers
-from rest_framework.decorators import api_view, renderer_classes
-from rest_framework.views import APIView, Response
-from rest_framework import viewsets, permissions, generics, status
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import api_view
+from rest_framework.views import Response
+from rest_framework import viewsets, generics, status
 from sap.models import Student, Collage, Course, Teacher, Attendance, Room
 from .serializers import StudentSerializer, CollegeSerializer, CourseSerializer, TeacherSerializer, \
     AttendanceSerializer, RoomSerializer, ScheduleSerializer
 from django.forms.models import model_to_dict
+import datetime
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
 
 class StudentView(viewsets.ModelViewSet):
@@ -37,10 +43,13 @@ class RoomView(viewsets.ModelViewSet):
 
 class ScheduleView(generics.ListAPIView):
     serializer_class = ScheduleSerializer
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
+        dt = datetime.datetime.today()
+        str_date = dt.strftime("%Y-%m-%d")
         teacher = self.kwargs['userid']
-        return Collage.objects.filter(teacher_id=teacher)
+        return Collage.objects.filter(teacher_id=teacher, day__gte=str_date).order_by('pk')
 
 
 class AttendanceSummaryView(generics.ListAPIView):
@@ -54,15 +63,19 @@ class AttendanceSummaryView(generics.ListAPIView):
 @api_view(['PUT'])
 def set_attendance_student(self, collegeid, studentid):
     try:
+        dt = datetime.datetime.today()
+        str_date = dt.strftime("%Y-%m-%d")
         student = Student.objects.filter(student_nr=studentid).get()
         attend = Attendance.objects.filter(student_id=student.pk, college_id=collegeid).get()
         confirm = Attendance(student=student, phone_check=True, card_check=True, college_id=collegeid)
         serializer = AttendanceSerializer(attend, data=model_to_dict(confirm))
+        college = Collage.objects.filter(pk=collegeid).get()
+        if str(college.day) < str_date or str(college.day) > str_date:
+            context = {"errormsg": "It is not allowed to set the attendance before or after the college day."}
+            return Response(context, status=status.HTTP_403_FORBIDDEN)
         if serializer.is_valid():
             serializer.save()
-            attendances = Attendance.objects.filter(college_id=collegeid)
-            att_response = serializers.serialize('json', attendances)
-            context = {"success": "student succesfully saved", "attendances": att_response, "collegeid": collegeid}
+            context = {"success": "student succesfully saved"}
             return Response(context, status=status.HTTP_200_OK)
         context = {"errormsg": "Something went wrong during saving please try again or contact the system admin"}
         return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -16,18 +16,26 @@
             <tbody>
             {% for schedule in schedules %}
                 <tr>
-                    <td>{{schedule.room}}</td>
-                    <td>{{schedule.day}}</td>
-                    <td>{{schedule.begin_time}}</td>
-                    <td>{{schedule.end_time}}</td>
-                    <td>{{schedule.course.name}}</td>
+                    <td>{{ schedule.room }}</td>
+                    <td>{{ schedule.day }}</td>
+                    <td>{{ schedule.begin_time }}</td>
+                    <td>{{ schedule.end_time }}</td>
+                    <td>{{ schedule.course.name }}</td>
                 </tr>
-                {% empty %}
+            {% empty %}
                 <tr>
                     <th colspan="5">There are no colleges</th>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+        <div class="col-12">
+            {% if previous %}
+                <a class="btn btn-info btn-sm" href="">Previous</a>
+            {% endif %}
+            {% if next %}
+                <a class="btn btn-info btn-sm" href="/teacherportal/schedule" name="next">{{ next }}</a>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
