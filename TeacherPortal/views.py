@@ -1,4 +1,3 @@
-from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from rest_framework.authtoken.models import Token
@@ -22,14 +21,12 @@ def index(request):
     str_time = dt.strftime("%H:%M:%S")
     t_list = []
     for sch in schedules['results']:
-        print(sch)
         if sch['day'] == str_date and sch['begin_time'] >= str_time:
             t_list.append(sch)
 
     context = {
         'schedules': t_list,
     }
-    print(t_list)
     return render(request, 'teacherportal/index.html', context)
 
 
@@ -46,15 +43,11 @@ def schedule(request):
     page_next = None
     page_previous = None
 
-    # if schedules['next']:ddd
-    #     print(schedules['next'])
-    #     page_next = get_page_number(schedules['next'])
-    #
-    # if schedules['previous']:
-    #     page_previous = get_page_number(schedules['previous'])
-    #
-    # print('next value' + str(page_next))
-    # print('prev value' + str(page_previous))
+    if schedules['next']:
+        page_next = get_page_number(schedules['next'])
+
+    if schedules['previous']:
+        page_previous = get_page_number(schedules['previous'])
 
     context = {
         'schedules': schedules['results'],
@@ -107,16 +100,6 @@ def set_student_attendance(request, collegeid, studentid):
         return HttpResponse('Unauthorized', status=401)
 
 
-def handler404(request):
-    data = {}
-    return render(request, '404.html', data)
-
-
-def handler500(request):
-    data = {}
-    return render(request, '500.html', data)
-
-
 # Checks if the teacher is the one of the current college
 def check_teacher(user, collegeid):
     token = Token.objects.get(user=user)
@@ -130,12 +113,22 @@ def check_teacher(user, collegeid):
             return False
 
 
+# return the page number from the URL so this can be used as a HREF in the template
 def get_page_number(url):
-    page_number = url.split("=", 1)
-
-    if not page_number[1]:
-        print('ik heb een waarde in de array')
-        return str(page_number[1])
+    a, *page_number = url.split('=', 1)
+    if page_number:
+        return str(page_number[0])
     else:
-        print('ik heb geen waarde in de array')
-        return str(2)
+        return str(1)
+
+
+# Custom 404 for the teacherportal
+def handler404(request):
+    data = {}
+    return render(request, '404.html', data)
+
+
+# Custom 500 internal error for the teacherportal
+def handler500(request):
+    data = {}
+    return render(request, '500.html', data)
