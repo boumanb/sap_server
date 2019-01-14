@@ -1,0 +1,10 @@
+{% extends "teacherportal/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="col-12">
+        <h2>You have been logged out</h2>
+    <div class="border-top pt-3">
+    <a href="{% url 'login' %}">Sign in</a>
+    </div>
+    </div>
+{% endblock %}

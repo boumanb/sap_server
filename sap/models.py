@@ -6,6 +6,9 @@ from dateutil import rrule
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Device(models.Model):
@@ -60,8 +63,7 @@ class Student(models.Model):
         if self.register_device_digits_valid_till > timezone.now():
             return "Registration time expired"
         if self.register_device_digits == sent_register_digits and bcrypt.checkpw(installation_uid.encode('utf-8'),
-                                                                                  self.device.installation_uid.encode(
-                                                                                          'utf-8')):
+                                                                                  self.device.installation_uid.encode('utf-8')):
             self.device.confirmed = True
             self.device.save()
             return True
@@ -122,12 +124,12 @@ class Student(models.Model):
                 return student_qs[0]
 
     def __str__(self):
-        return str(self.__class__) + ": " + str(self.__dict__)
+        return self.student_nr
 
 
 class Teacher(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=200)
-    password = models.CharField(max_length=200)
     email = models.CharField(max_length=200, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -136,7 +138,7 @@ class Teacher(models.Model):
         Attendance(student=student, college=college, phone_check=True, card_check=True)
 
     def __str__(self):
-        return str(self.__class__) + ": " + str(self.__dict__)
+        return self.name
 
 
 class Course(models.Model):
@@ -180,7 +182,7 @@ class Course(models.Model):
         return College.objects.filter(course=self)
 
     def __str__(self):
-        return str(self.__class__) + ": " + str(self.__dict__)
+        return self.name
 
 
 # noinspection PyMethodMayBeStatic
@@ -200,7 +202,7 @@ class Room(models.Model):
         return college
 
     def __str__(self):
-        return str(self.__class__) + ": " + str(self.__dict__)
+        return self.name
 
 
 class College(models.Model):
@@ -209,6 +211,8 @@ class College(models.Model):
     end_time = models.TimeField(null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True)
+    attendees = models.ManyToManyField(Student)
 
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)

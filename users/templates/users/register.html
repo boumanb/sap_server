@@ -1,0 +1,20 @@
+{% extends "teacherportal/base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Register {% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Register teacher account</legend>
+                {{ form|crispy }}
+                {{ form_teacher|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Register</button>
+            </div>
+        </form>
+    </div>
+    </div>
+{% endblock %}

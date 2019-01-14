@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import sys
-
+from django.contrib.messages import constants as messages
 from decouple import config
 
 TEST = 'test' in sys.argv
@@ -27,7 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'ql@6jp(#t^(ib)@)^v$5i_v%_-sko1_%7wgvj98%x(7efeesoo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')])
 
@@ -35,6 +35,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.spl
 
 INSTALLED_APPS = [
     'sap',
+    'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,7 +45,12 @@ INSTALLED_APPS = [
     'modernrpc',
     'autofixture',
     'django_seed',
-    'django_jenkins'
+    'django_jenkins',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'FrontEndAPI',
+    'TeacherPortal',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -190,3 +196,27 @@ LOGGING = {
         },
     }
 }
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',), #AllowAny, #IsAuthenticated
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+}
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+LOGIN_REDIRECT_URL = 'teacherportal-home'
+LOGIN_URL = 'login'
