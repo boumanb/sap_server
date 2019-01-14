@@ -190,6 +190,7 @@ def card_check(card_uid, reader_uid, **kwargs):
 
     try:
         room = Room.objects.get(reader_UID=reader_uid)
+
     except exceptions.ObjectDoesNotExist:
         r = {
             "success": False,
@@ -199,6 +200,7 @@ def card_check(card_uid, reader_uid, **kwargs):
 
     try:
         college = room.find_college()
+
     except exceptions.ObjectDoesNotExist:
         r = {
             "success": False,
