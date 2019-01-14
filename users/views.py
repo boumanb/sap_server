@@ -10,6 +10,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, TeacherRegisterForm, UserUpdateForm, TeacherUpdateForm
+from rest_framework.authtoken.models import Token
 
 
 def register(request):
@@ -60,6 +61,7 @@ def activate(request, uidb64, token):
     if user is not None and teacher_signup_token.check_token(user, token):
         user.is_active = True
         user.save()
+        Token.objects.create(user=user)
         messages.success(request, f'{user.teacher.name} is successfully activated you can login now!')
         return redirect('login')
     else:
