@@ -122,8 +122,8 @@ class Command(BaseCommand):
     help = "seed database for testing and development."
 
     def add_arguments(self, parser):
-        parser.add_argument('--t_username', type=str, help="Teacher username")
-        parser.add_argument('--t_password', type=str, help="Teacher password")
+        parser.add_argument('--t_username', type=str, help="teacher username")
+        parser.add_argument('--t_password', type=str, help="teacher password")
 
     def handle(self, *args, **options):
         self.stdout.write('seeding data...')
