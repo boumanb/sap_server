@@ -1,0 +1,19 @@
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container">
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Teacher Edit</legend>
+                <h2>{{ user.username }}</h2>
+                {{ u_form|crispy }}
+                {{ t_form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Update</button>
+                <a href="{% url 'teacher' %}" class="btn btn-info">Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

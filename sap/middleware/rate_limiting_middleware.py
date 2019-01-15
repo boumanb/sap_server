@@ -1,9 +1,7 @@
 import json
-import time
 
-from django.conf import settings
 from decouple import config
-from django.core.cache import cache
+from django.conf import settings
 from django.http import HttpResponse
 
 from sap.middleware.bucket import Bucket
@@ -33,6 +31,8 @@ class RateLimitingMiddleware(object):
 
     def process_request(self, request):
         if not request.path.startswith('/rpc/'):
+            return None
+        if not request.body:
             return None
         if json.loads(request.body)['method'] in self.excluded_methods:
             return None

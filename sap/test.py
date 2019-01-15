@@ -20,7 +20,7 @@ class StudentModelTests(TestCase):
             device=cls.device
         )
         cls.room = Room.objects.create(name='Test', reader_UID='12345')
-        cls.teacher = Teacher.objects.create(name='Test teacher', password='test', email='test@test.nl')
+        cls.teacher = Teacher.objects.create(name='Test teacher', email='test@test.nl')
 
     def test_has_device_but_not_confirmed(self):
         student = Student()
@@ -59,7 +59,7 @@ class RPCAPITests(TestCase):
             device=cls.device
         )
         cls.room = Room.objects.create(name='Test', reader_UID='12345')
-        cls.teacher = Teacher.objects.create(name='Test teacher', password='test', email='test@test.nl')
+        cls.teacher = Teacher.objects.create(name='Test teacher', email='test@test.nl')
         cls.course = Course.objects.create(name='Computer science')
         cls.course.teacher.add(cls.teacher)
         cls.course.attendees.add(cls.student)
