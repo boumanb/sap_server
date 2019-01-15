@@ -15,7 +15,7 @@
             </thead>
             <tbody>
             {% for schedule in schedules %}
-                <tr class='clickable-row' id="{{ schedule.course.id }}">
+                <tr class='clickable-row' id="{{ schedule.id }}">
                     <td>{{ schedule.room }}</td>
                     <td>{{ schedule.day }}</td>
                     <td>{{ schedule.begin_time }}</td>
@@ -30,7 +30,7 @@
     <script>
         $(".clickable-row").click(function () {
             courseId = $(this).closest('tr').attr('id');
-            window.location = "http://127.0.0.1:8000/teacherportal/attendance_summary/ "+ courseId + "/";
+            window.location = "http://127.0.0.1:8000/teacherportal/attendance_summary/"+ courseId + "/";
         });
     </script>
 {% endblock %}

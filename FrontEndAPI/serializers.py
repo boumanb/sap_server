@@ -67,4 +67,4 @@ class ScheduleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = College
-        fields = ('day', 'begin_time', 'end_time', 'room', 'course', 'teacher')
+        fields = ('id', 'day', 'begin_time', 'end_time', 'room', 'course', 'teacher')

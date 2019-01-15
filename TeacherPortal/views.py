@@ -21,7 +21,7 @@ def index(request):
     str_time = dt.strftime("%H:%M:%S")
     t_list = []
     for sch in schedules['results']:
-        if sch['day'] == str_date and sch['begin_time'] >= str_time:
+        if sch['day'] == str_date:
             t_list.append(sch)
 
     context = {
