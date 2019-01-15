@@ -49,7 +49,7 @@ class ScheduleView(generics.ListAPIView):
         dt = datetime.datetime.today()
         str_date = dt.strftime("%Y-%m-%d")
         teacher = self.kwargs['userid']
-        return College.objects.filter(teacher_id=teacher, day__gte=str_date).order_by('pk')
+        return College.objects.filter(teacher_id=teacher, day__gte=str_date).order_by('day')
 
 
 class AttendanceSummaryView(generics.ListAPIView):
