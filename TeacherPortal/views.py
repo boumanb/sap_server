@@ -103,14 +103,12 @@ def set_student_attendance(request, collegeid, studentid):
 # Checks if the teacher is the one of the current college
 def check_teacher(user, collegeid):
     token = Token.objects.get(user=user)
-    teacher_check = requests.get(api_url + '/Courses/' + collegeid + '/',
+    teacher_check = requests.get(api_url + '/Colleges/' + collegeid + '/',
                                  headers={'Authorization': 'token ' + token.key}).json()
-    teachers = teacher_check['teacher']
-    for teacher in teachers:
-        if teacher == user.teacher.pk:
-            return True
-        else:
-            return False
+    if teacher_check['teacher'] is user.teacher.pk:
+        return True
+    else:
+        return False
 
 
 # return the page number from the URL so this can be used as a HREF in the template

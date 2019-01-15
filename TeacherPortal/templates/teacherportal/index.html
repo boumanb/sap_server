@@ -1,0 +1,36 @@
+{% extends "teacherportal/base.html" %}
+
+{% block content %}
+    <div class="col-12">
+        <h2>Today Colleges on {% now "jS F Y" %}</h2>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Room</th>
+                <th>Date</th>
+                <th>Begin time</th>
+                <th>End time</th>
+                <th>College</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for schedule in schedules %}
+                <tr class='clickable-row' id="{{ schedule.course.id }}">
+                    <td>{{ schedule.room }}</td>
+                    <td>{{ schedule.day }}</td>
+                    <td>{{ schedule.begin_time }}</td>
+                    <td>{{ schedule.end_time }}</td>
+                    <td>{{ schedule.course.name }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(".clickable-row").click(function () {
+            courseId = $(this).closest('tr').attr('id');
+            window.location = "http://127.0.0.1:8000/teacherportal/attendance_summary/ "+ courseId + "/";
+        });
+    </script>
+{% endblock %}

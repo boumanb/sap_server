@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from rest_framework.authtoken.models import Token
+
 from sap.models import Teacher
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
@@ -60,6 +62,7 @@ def activate(request, uidb64, token):
     if user is not None and teacher_signup_token.check_token(user, token):
         user.is_active = True
         user.save()
+        Token.objects.create(user=user)
         messages.success(request, f'{user.teacher.name} is successfully activated you can login now!')
         return redirect('login')
     else:

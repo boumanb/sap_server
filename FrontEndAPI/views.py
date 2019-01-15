@@ -56,8 +56,21 @@ class AttendanceSummaryView(generics.ListAPIView):
     serializer_class = AttendanceSerializer
 
     def get_queryset(self):
-        collegeid = self.kwargs['collegeid']
-        return Attendance.objects.filter(college_id=collegeid)
+        attendees = []
+        college_id = self.kwargs['collegeid']
+        college = College.objects.get(id=college_id)
+        college_attendees = college.course.attendees.all()
+        present_attendees = Attendance.objects.filter(college_id=college_id)
+        for attendee in college_attendees:
+            if present_attendees.all().filter(student_id=attendee.pk).exists():
+                attendees.append(present_attendees.all().filter(student_id=attendee.pk).get())
+            else:
+                attendees.append({
+                    'student': attendee,
+                    'phone_check': False,
+                    'card_check': False
+                })
+        return attendees
 
 
 @api_view(['PUT'])
