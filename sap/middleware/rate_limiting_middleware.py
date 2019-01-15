@@ -32,6 +32,8 @@ class RateLimitingMiddleware(object):
     def process_request(self, request):
         if not request.path.startswith('/rpc/'):
             return None
+        if not request.body:
+            return None
         if json.loads(request.body)['method'] in self.excluded_methods:
             return None
         student = Student.get_by_apitoken(request.META.get("HTTP_AUTHORIZATION"))

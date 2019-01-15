@@ -91,11 +91,7 @@ def set_student_attendance(request, collegeid, studentid):
     if teacher_check:
         set_attendance = requests.put(api_url + '/SetAttendance/' + str(collegeid) + '/' + str(studentid) + '/',
                                       headers={'Authorization': 'token ' + token.key})
-        data = set_attendance.json()
-        if data['success']:
-            return JsonResponse(data)
-        else:
-            return JsonResponse(data)
+        return JsonResponse(set_attendance.json())
     else:
         return HttpResponse('Unauthorized', status=401)
 

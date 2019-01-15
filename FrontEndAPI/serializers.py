@@ -42,7 +42,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Attendance
-        fields = ('timestamp', 'student', 'college', 'phone_check', 'card_check', 'phone', 'card')
+        fields = ('timestamp', 'student', 'college', 'phone_check', 'card_check', 'phone', 'card', 'student_id')
 
 
 class TeacherSerializer(serializers.ModelSerializer):
