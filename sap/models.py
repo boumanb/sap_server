@@ -148,7 +148,7 @@ class Course(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     attendees = models.ManyToManyField(Student)
 
-    def make_colleges(self, room, times, dates):
+    def make_colleges(self, room, times, dates, teacher=False):
         # Times is a list of tuples(weekday, starttime, endtime)
         # Dates is tuple of (startdate, enddate)
 
@@ -167,16 +167,27 @@ class Course(models.Model):
                                byweekday=weekday,
                                dtstart=dates[0],
                                until=dates[1])
-
-            for x in days:
-                coll = College(
-                    day=x,
-                    begin_time=e[1],
-                    end_time=e[2],
-                    room=room,
-                    course=self
-                )
-                coll.save()
+            if teacher:
+                for x in days:
+                    coll = College(
+                        day=x,
+                        begin_time=e[1],
+                        end_time=e[2],
+                        room=room,
+                        course=self,
+                        teacher=teacher
+                    )
+                    coll.save()
+            else:
+                for x in days:
+                    coll = College(
+                        day=x,
+                        begin_time=e[1],
+                        end_time=e[2],
+                        room=room,
+                        course=self
+                    )
+                    coll.save()
 
     def get_colleges(self):
         return College.objects.filter(course=self)
