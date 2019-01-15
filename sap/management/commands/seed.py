@@ -37,8 +37,8 @@ def generate_colleges():
     course = Course.objects.get(id=1)
     room = Room.objects.get(id=1)
 
-    d1 = datetime.date(year=2018, month=6, day=15)
-    d2 = datetime.date(year=2018, month=8, day=15)
+    d1 = datetime.date(year=2019, month=1, day=1)
+    d2 = datetime.date(year=2019, month=12, day=30)
 
     t1 = datetime.time(hour=13, minute=30)
     t2 = datetime.time(hour=14, minute=30)
@@ -46,13 +46,18 @@ def generate_colleges():
     t3 = datetime.time(hour=11, minute=30)
     t4 = datetime.time(hour=16, minute=30)
 
-    time = [("MO", t1, t2), ("TU", t3, t4)]
+    time = [("MO", t1, t2), ("TU", t3, t4), ("WE", t3, t4), ("TH", t3, t4), ("FR", t3, t4)]
     date = (d1, d2)
 
     course.make_colleges(room, time, date)
 
 
 def seed():
+    u = User()
+    u.username = 'test'
+    u.set_password('test')
+    u.save()
+
     for e in range(10):
         generate_device_student()
 
@@ -70,10 +75,10 @@ def seed():
         'reader_UID': lambda x: seeder.faker.ean13()
     })
 
-    seeder.add_entity(Teacher, 5, {
+    seeder.add_entity(Teacher, 1, {
         'name': lambda x: seeder.faker.name(),
-        'password': lambda x: seeder.faker.password(),
-        'email': lambda x: seeder.faker.email()
+        'email': lambda x: seeder.faker.email(),
+        'user': u
     })
 
     seeder.add_entity(Course, 5, {
