@@ -28,14 +28,18 @@
     <a class="navbar-brand" href="{% url 'teacherportal-home' %}">Teacher portal</a>
 
     <div class="collapse navbar-collapse">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url 'teacherportal-home' %}">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'schedule' %}">Schedule</a>
-            </li>
-        </ul>
+        {% if user.is_authenticated %}
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'teacherportal-home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'schedule' %}">Schedule</a>
+                </li>
+            </ul>
+        {% else %}
+            <div class="mr-auto"></div>
+        {% endif %}
         {% if user.is_authenticated %}
             <a href="{% url 'teacher' %}" class="nav-link navbar-btn pull-right"> Profile</a>
             <a href="{% url 'logout' %}" class="nav-link navbar-btn pull-right"> Log out</a>
