@@ -76,7 +76,7 @@
 
             $('#modalSave').click(function (e) {
                 $.ajax({
-                    url: 'http://127.0.0.1:8000/teacherportal/set_student_attendance/' + collegeid + '/' + studentid + '/',
+                    url: '{{ BASE_URL_W_TRAILING_SLASH }}teacherportal/set_student_attendance/' + collegeid + '/' + studentid + '/',
                     success: function (data) {
                         if (data.success) {
                             $('#modalConfirm').modal('hide');

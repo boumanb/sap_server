@@ -5,7 +5,9 @@ import requests
 from django.http import JsonResponse, HttpResponse
 import datetime
 
-api_url = "http://127.0.0.1:8000/api"
+from sap import settings
+
+api_url = settings.BASE_URL_W_TRAILING_SLASH + 'api/'
 
 
 def index(request):
@@ -15,10 +17,10 @@ def index(request):
 
 # Index method returns only the colleges on the current day
 @login_required
-def todayschedule(request):
+def today_schedule(request):
     user = request.user
     token = Token.objects.get(user=user)
-    get_schedule = requests.get(api_url + '/Schedules/' + str(user.teacher.pk) + '/',
+    get_schedule = requests.get(api_url + 'Schedules/' + str(user.teacher.pk) + '/',
                                 headers={'Authorization': 'token ' + token.key})
     schedules = get_schedule.json()
     dt = datetime.datetime.today()
@@ -42,7 +44,7 @@ def schedule(request):
     number = str(request.GET.get('page', '1'))
     token = Token.objects.get(user=user)
     get_schedule = requests.get(
-        api_url + '/Schedules/' + str(user.teacher.pk) + '/?page=' + number,
+        api_url + 'Schedules/' + str(user.teacher.pk) + '/?page=' + number,
         headers={'Authorization': 'token ' + token.key})
     schedules = get_schedule.json()
     page_next = None
@@ -68,7 +70,7 @@ def schedule(request):
 def get_attendance_summary(request, collegeid):
     user = request.user
     token = Token.objects.get(user=user)
-    get_attendance = requests.get(api_url + '/Attendances/' + str(collegeid) + '/',
+    get_attendance = requests.get(api_url + 'Attendances/' + str(collegeid) + '/',
                                   headers={'Authorization': 'token ' + token.key})
     attendances = get_attendance.json()
     # Go to function def check_teacher to check if the teacher is the one that the college is linked to.
@@ -94,7 +96,7 @@ def set_student_attendance(request, collegeid, studentid):
     teacher_check = check_teacher(user, collegeid)
 
     if teacher_check:
-        set_attendance = requests.put(api_url + '/SetAttendance/' + str(collegeid) + '/' + str(studentid) + '/',
+        set_attendance = requests.put(api_url + 'SetAttendance/' + str(collegeid) + '/' + str(studentid) + '/',
                                       headers={'Authorization': 'token ' + token.key})
         return JsonResponse(set_attendance.json())
     else:
@@ -104,7 +106,7 @@ def set_student_attendance(request, collegeid, studentid):
 # Checks if the teacher is the one of the current college
 def check_teacher(user, collegeid):
     token = Token.objects.get(user=user)
-    teacher_check = requests.get(api_url + '/Colleges/' + collegeid + '/',
+    teacher_check = requests.get(api_url + 'Colleges/' + collegeid + '/',
                                  headers={'Authorization': 'token ' + token.key}).json()
     if teacher_check['teacher'] is user.teacher.pk:
         return True

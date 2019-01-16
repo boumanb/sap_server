@@ -30,7 +30,7 @@
     <script>
         $(".clickable-row").click(function () {
             courseId = $(this).closest('tr').attr('id');
-            window.location = "http://127.0.0.1:8000/teacherportal/attendance_summary/"+ courseId + "/";
+            window.location = "{{ BASE_URL_W_TRAILING_SLASH  }}teacherportal/attendance_summary/"+ courseId + "/";
         });
     </script>
 {% endblock %}
