@@ -1,13 +1,10 @@
 {% extends "teacherportal/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="col-12">
+        <div class="pb-5">
+            <h3>Teacher edit</h3>
+        </div>
         <div id="teacherSummary">
-            <div>
-                <legend class="border-bottom mb-4">Teacher info</legend>
-                <button type="submit" id="editTeacher" class="btn btn-info float-right">Edit Account</button>
-
-            </div>
             <div class="media-body">
                 <table class="table ">
                     <tr>
@@ -24,8 +21,8 @@
                     </tr>
                 </table>
             </div>
+            <button type="submit" id="editTeacher" class="btn btn-info">Edit Account</button>
         </div>
-    </div>
     <script>
 
         $("#editTeacher").click(function (e) {

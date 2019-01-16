@@ -1,0 +1,4 @@
+.fc-event:hover {
+    transition: background-color 0.5s linear;
+    background-color: #89CFF0 !important;
+}
