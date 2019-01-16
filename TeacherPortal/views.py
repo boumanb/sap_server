@@ -8,9 +8,14 @@ import datetime
 api_url = "http://127.0.0.1:8000/api"
 
 
+def index(request):
+    data = {}
+    return render(request, 'teacherportal/index.html', data)
+
+
 # Index method returns only the colleges on the current day
 @login_required
-def index(request):
+def todayschedule(request):
     user = request.user
     token = Token.objects.get(user=user)
     get_schedule = requests.get(api_url + '/Schedules/' + str(user.teacher.pk) + '/',
@@ -27,7 +32,7 @@ def index(request):
     context = {
         'schedules': t_list,
     }
-    return render(request, 'teacherportal/index.html', context)
+    return render(request, 'teacherportal/todayschedule.html', context)
 
 
 # Schedule shows all planned colleges on current day and after that
