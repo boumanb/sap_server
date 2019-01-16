@@ -27,7 +27,7 @@ def today_schedule(request):
     str_date = dt.strftime("%Y-%m-%d")
     str_time = dt.strftime("%H:%M:%S")
     t_list = []
-    for sch in schedules['results']:
+    for sch in schedules:
         if sch['day'] == str_date:
             t_list.append(sch)
 
@@ -41,26 +41,13 @@ def today_schedule(request):
 @login_required
 def schedule(request):
     user = request.user
-    number = str(request.GET.get('page', '1'))
     token = Token.objects.get(user=user)
     get_schedule = requests.get(
-        api_url + 'Schedules/' + str(user.teacher.pk) + '/?page=' + number,
+        api_url + 'Schedules/' + str(user.teacher.pk),
         headers={'Authorization': 'token ' + token.key})
     schedules = get_schedule.json()
-    page_next = None
-    page_previous = None
-
-    if schedules['next']:
-        page_next = get_page_number(schedules['next'])
-
-    if schedules['previous']:
-        page_previous = get_page_number(schedules['previous'])
-
     context = {
-        'schedules': schedules['results'],
-        'count': schedules['count'],
-        'next': page_next,
-        'previous': page_previous,
+        'schedules': schedules
     }
     return render(request, 'teacherportal/schedule.html', context)
 
