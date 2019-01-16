@@ -9,7 +9,7 @@ django-crispy-forms==1.7.2
 django-jenkins==0.110.0
 django-modern-rpc==0.11.1
 django-seed==0.1.9
-djangorestframework==3.9.0
+django-rest_framework==3.9.0
 Faker==1.0.0
 gunicorn==19.9.0
 idna==2.8
