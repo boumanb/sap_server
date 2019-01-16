@@ -220,5 +220,5 @@ MESSAGE_TAGS = {
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_REDIRECT_URL = 'teacherportal-home'
+LOGIN_REDIRECT_URL = 'today_schedule'
 LOGIN_URL = 'login'

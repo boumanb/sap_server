@@ -7,12 +7,7 @@ from .serializers import StudentSerializer, CollegeSerializer, CourseSerializer,
     AttendanceSerializer, RoomSerializer, ScheduleSerializer
 from django.forms.models import model_to_dict
 import datetime
-
-
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 20
-    page_size_query_param = 'page_size'
-    max_page_size = 1000
+from datetime import timedelta
 
 
 class StudentView(viewsets.ModelViewSet):
@@ -43,13 +38,14 @@ class RoomView(viewsets.ModelViewSet):
 
 class ScheduleView(generics.ListAPIView):
     serializer_class = ScheduleSerializer
-    pagination_class = StandardResultsSetPagination
+
+    # pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        dt = datetime.datetime.today()
-        str_date = dt.strftime("%Y-%m-%d")
+        today = datetime.datetime.today()
+        today_plus_30 = datetime.datetime.today() + timedelta(days=180)
         teacher = self.kwargs['userid']
-        return College.objects.filter(teacher_id=teacher, day__gte=str_date).order_by('day')
+        return College.objects.filter(teacher_id=teacher, day__gte=today.strftime("%Y-%m-%d"), day__lte=today_plus_30.strftime("%Y-%m-%d")).order_by('day')
 
 
 class AttendanceSummaryView(generics.ListAPIView):
@@ -118,4 +114,3 @@ def set_attendance_student(self, collegeid, studentid):
     except Student.DoesNotExist or Teacher.DoesNotExist:
         context = {"errormsg": "Student does not exist"}
         return Response(context, status=status.HTTP_404_NOT_FOUND)
-

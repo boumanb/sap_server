@@ -1,8 +1,11 @@
 {% extends "teacherportal/base.html" %}
 
 {% block content %}
-{#    </div>#}
-{#        <table class="table">#}
+        <div class="pb-5">
+            <h3>Hi {{ user.username }}, you have {{ schedules|length }} college{% if schedules|length > 1 %}s{% endif %} today</h3>
+        </div>
+
+{#        <table class="table table-hover">#}
 {#            <thead>#}
 {#            <tr>#}
 {#                <th>Room</th>#}
@@ -14,29 +17,21 @@
 {#            </thead>#}
 {#            <tbody>#}
 {#            {% for schedule in schedules %}#}
-{#                <tr>#}
+{#                <tr class='clickable-row' id="{{ schedule.id }}">#}
 {#                    <td>{{ schedule.room }}</td>#}
 {#                    <td>{{ schedule.day }}</td>#}
 {#                    <td>{{ schedule.begin_time }}</td>#}
 {#                    <td>{{ schedule.end_time }}</td>#}
 {#                    <td>{{ schedule.course.name }}</td>#}
 {#                </tr>#}
-{#            {% empty %}#}
-{#                <tr>#}
-{#                    <th colspan="5">There are no colleges</th>#}
-{#                </tr>#}
 {#            {% endfor %}#}
 {#            </tbody>#}
 {#        </table>#}
-{#        <div class="col-12">#}
-{#            {% if previous %}#}
-{#                <a class="btn btn-info btn-sm" href="/teacherportal/schedule/?page={{ previous }}">Previous</a>#}
-{#            {% endif %}#}
-{#            {% if next %}#}
-{#                <a class="btn btn-info btn-sm" href="/teacherportal/schedule/?page={{ next }}">Next</a>#}
-{#            {% endif %}#}
-{##}
-{#        </div>#}
-{#    </div>#}
-    {% include 'teacherportal/includes/schedule.html' %}
+        {% include 'teacherportal/includes/schedule.html' %}
+        <script>
+        $(".clickable-row").click(function () {
+            courseId = $(this).closest('tr').attr('id');
+            window.location = "{{ BASE_URL_W_TRAILING_SLASH  }}teacherportal/attendance_summary/"+ courseId + "/";
+        });
+        </script>
 {% endblock %}
