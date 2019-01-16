@@ -34,7 +34,7 @@ def today_schedule(request):
     context = {
         'schedules': t_list,
     }
-    return render(request, 'teacherportal/todayschedule.html', context)
+    return render(request, 'teacherportal/today_schedule.html', context)
 
 
 # Schedule shows all planned colleges on current day and after that

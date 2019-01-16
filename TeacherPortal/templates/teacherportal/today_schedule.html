@@ -2,7 +2,10 @@
 
 {% block content %}
     <div class="col-12">
-        <h2>Today Colleges on {% now "jS F Y" %}</h2>
+        <div class="pb-5">
+            <h3>Hi {{ user.username }}, you have {{ schedules|length }} college{% if schedules|length > 1 %}s{% endif %} today</h3>
+        </div>
+
         <table class="table table-hover">
             <thead>
             <tr>
