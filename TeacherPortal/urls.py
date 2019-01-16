@@ -14,7 +14,7 @@ urlpatterns = [
      path('teacher/', user_views.teacher, name="teacher"),
      path('teacher/teacher_edit', user_views.teacher_edit, name="teacher_edit"),
 
-
+     path('today_schedule/', views.today_schedule, name="today_schedule"),
      path('schedule/', views.schedule, name="schedule"),
      path('attendance_summary/<collegeid>/', views.get_attendance_summary, name="attendance_summary"),
      path('set_student_attendance/<collegeid>/<studentid>/', views.set_student_attendance, name="set_student_attendance")
