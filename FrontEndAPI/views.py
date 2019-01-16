@@ -42,10 +42,10 @@ class ScheduleView(generics.ListAPIView):
     # pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        today = datetime.datetime.today()
+        today_min_5 = datetime.datetime.today() - timedelta(days=5)
         today_plus_30 = datetime.datetime.today() + timedelta(days=180)
         teacher = self.kwargs['userid']
-        return College.objects.filter(teacher_id=teacher, day__gte=today.strftime("%Y-%m-%d"), day__lte=today_plus_30.strftime("%Y-%m-%d")).order_by('day')
+        return College.objects.filter(teacher_id=teacher, day__gte=today_min_5.strftime("%Y-%m-%d"), day__lte=today_plus_30.strftime("%Y-%m-%d")).order_by('day')
 
 
 class AttendanceSummaryView(generics.ListAPIView):
