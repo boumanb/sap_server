@@ -31,7 +31,7 @@
         $("#editTeacher").click(function (e) {
             console.log('clicked');
             $.ajax({
-                url: "{{ BASE_URL_W_TRAILING_SLASH }}{% url 'teacher_edit' %}",
+                url: "{{ BASE_URL }}{% url 'teacher_edit' %}",
                 success: function (data) {
                     console.log('This was a succes but the append went wrong')
                     $('#teacherSummary').html(data);
