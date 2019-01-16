@@ -1,0 +1,9 @@
+.fc-event {
+    cursor: pointer;
+    background-color: #ADD8E6 !important;
+}
+
+.fc-event:hover {
+    transition: background-color 0.5s linear;
+    background-color: #89CFF0 !important;
+}

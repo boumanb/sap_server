@@ -123,6 +123,9 @@ class Student(models.Model):
             else:
                 return student_qs[0]
 
+    class Meta:
+        ordering = ('name',)
+
     def __str__(self):
         return self.student_nr
 

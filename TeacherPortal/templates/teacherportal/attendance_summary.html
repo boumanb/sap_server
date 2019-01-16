@@ -2,7 +2,7 @@
 
 
 {% block content %}
-    <div class="col-12 attendanceSum">
+    <div class="attendanceSum">
 
         <div id="modalConfirm" class="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
@@ -24,16 +24,18 @@
             </div>
         </div>
 
-        <div class="pb-5">
-            <input id="SetAttendance" class="btn btn-outline-info" type="submit" value="Set attendance">
-        </div>
+{#        <div class="pb-5">#}
+{#            <input id="SetAttendance" class="btn btn-outline-info" type="submit" value="Set attendance">#}
+{#        </div>#}
         <table class="table table-hover">
             <thead>
             <tr>
                 <th>Studentnumber</th>
                 <th>Student name</th>
                 <th>Phone check</th>
-                <th colspan="2">Card check</th>
+                <th>Card check</th>
+                <th>Present</th>
+                <th></th>
             </tr>
             </thead>
             <tbody class="tbodyAttend">
@@ -44,7 +46,12 @@
                         <td>{{ attendee.student.name }}</td>
                         <td>{{ attendee.phone_check }}</td>
                         <td>{{ attendee.card_check }}</td>
-                        <td></td>
+                        <td><i class="fas fa-check"></i></td>
+                        <td>
+                            <button disabled="true" type="button" class="btn btn-outline-primary btn-sm attend">
+                                Set present
+                            </button>
+                        </td>
                     </tr>
                 {% else %}
                     <tr class="table-danger" id="{{ attendee.student.student_nr }}">
@@ -52,9 +59,10 @@
                         <td>{{ attendee.student.name }}</td>
                         <td>{{ attendee.phone_check }}</td>
                         <td>{{ attendee.card_check }}</td>
+                        <td><i class="fas fa-times"></i></td>
                         <td>
-                            <button style="display:none;" type="button" class="btn btn-outline-primary btn-sm attend">
-                                Present
+                            <button type="button" class="btn btn-outline-primary btn-sm attend">
+                                Set present
                             </button>
                         </td>
                     </tr>
@@ -82,7 +90,7 @@
                             $('#modalConfirm').modal('hide');
                             location.reload();
                         } else {
-                            alert('Something went wrong try again or contact system admin.s');
+                            alert(data.errormsg);
                         }
                     }
 
