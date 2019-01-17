@@ -70,7 +70,8 @@ class Student(models.Model):
         if self.register_device_digits_valid_till > timezone.now():
             return "Registration time expired"
         if self.register_device_digits == sent_register_digits and bcrypt.checkpw(installation_uid.encode('utf-8'),
-                                                                                  self.device.installation_uid.encode('utf-8')):
+                                                                                  self.device.installation_uid.encode(
+                                                                                      'utf-8')):
             self.device.confirmed = True
             self.device.save()
             return True
@@ -254,3 +255,15 @@ class Attendance(models.Model):
 
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
+
+    @property
+    def course_stats(self):
+        attendances = Attendance.objects.filter(student=self.student, college__course=self.college.course)
+        present = 0
+        for attendance in attendances:
+            if attendance.phone_check is True and attendance.card_check is True:
+                present += 1
+        return {
+            'total': attendances.count(),
+            'present': present
+        }
