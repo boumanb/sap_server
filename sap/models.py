@@ -264,6 +264,6 @@ class Attendance(models.Model):
             if attendance.phone_check is True and attendance.card_check is True:
                 present += 1
         return {
-            'total': attendances.count(),
+            'total': College.objects.filter(course=self.college.course, day__lte=timezone.now()).count(),
             'present': present
         }
