@@ -1,8 +1,9 @@
 {% extends "teacherportal/base.html" %}
-
+{% load add_days %}
 {% block content %}
-    <div class="pb-5">
-        <h3>Welcome, {{ user.username }}.</h3>
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h3>Welcome, {{ user.username }}. Here is you're schedule till {{ 180|add_days }}.</h3>
     </div>
     {% include 'teacherportal/includes/schedule.html' %}
 {% endblock %}

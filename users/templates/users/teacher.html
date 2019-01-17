@@ -1,28 +1,28 @@
 {% extends "teacherportal/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-        <div class="pb-5">
-            <h3>Teacher edit</h3>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h3>Teacher edit</h3>
+    </div>
+    <div id="teacherSummary">
+        <div class="media-body">
+            <table class="table ">
+                <tr>
+                    <th scope="row">Username</th>
+                    <td>{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ user.teacher.email }}</td>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <td>{{ user.teacher.name }}</td>
+                </tr>
+            </table>
         </div>
-        <div id="teacherSummary">
-            <div class="media-body">
-                <table class="table ">
-                    <tr>
-                        <th scope="row">Username</th>
-                        <td>{{ user.username }}</td>
-                    </tr>
-                    <tr>
-                        <th>Email</th>
-                        <td>{{ user.teacher.email }}</td>
-                    </tr>
-                    <tr>
-                        <th>Name</th>
-                        <td>{{ user.teacher.name }}</td>
-                    </tr>
-                </table>
-            </div>
-            <button type="submit" id="editTeacher" class="btn btn-info">Edit Account</button>
-        </div>
+        <button type="submit" id="editTeacher" class="btn btn-info">Edit Account</button>
+    </div>
     <script>
 
         $("#editTeacher").click(function (e) {
