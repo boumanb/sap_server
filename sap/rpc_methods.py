@@ -229,7 +229,7 @@ def phone_check(installation_uid, **kwargs):
     try:
         att = Attendance.objects.get(
             student=student,
-            timestamp__gte=timezone.now() - datetime.timedelta(seconds=5))
+            timestamp__gte=timezone.now() - datetime.timedelta(seconds=30))
 
     except exceptions.ObjectDoesNotExist:
         r = {
