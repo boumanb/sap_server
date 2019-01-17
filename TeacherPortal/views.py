@@ -12,7 +12,7 @@ api_url = settings.BASE_URL_W_TRAILING_SLASH + 'api/'
 
 def index(request):
     data = {}
-    return render(request, 'teacherportal/index.html', data)
+    return render(request, 'teacherportal/schedule.html', data)
 
 
 # Index method returns only the colleges on the current day
@@ -111,3 +111,7 @@ def handler404(request):
 def handler500(request):
     data = {}
     return render(request, '500.html', data)
+
+
+def stats(request):
+    return None
