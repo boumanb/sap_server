@@ -78,7 +78,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'sap.context_processors.global_settings'
+                'sap.context_processors.global_settings',
+                'sap.context_processors.api_token'
             ],
         },
     },
@@ -220,5 +221,5 @@ MESSAGE_TAGS = {
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_REDIRECT_URL = 'today_schedule'
+LOGIN_REDIRECT_URL = 'schedule'
 LOGIN_URL = 'login'

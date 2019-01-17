@@ -40,16 +40,7 @@ def today_schedule(request):
 # Schedule shows all planned colleges on current day and after that
 @login_required
 def schedule(request):
-    user = request.user
-    token = Token.objects.get(user=user)
-    get_schedule = requests.get(
-        api_url + 'Schedules/' + str(user.teacher.pk),
-        headers={'Authorization': 'token ' + token.key})
-    schedules = get_schedule.json()
-    context = {
-        'schedules': schedules
-    }
-    return render(request, 'teacherportal/schedule.html', context)
+    return render(request, 'teacherportal/schedule.html')
 
 
 # get the attendance of all the students that should be in the college
