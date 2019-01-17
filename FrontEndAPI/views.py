@@ -64,7 +64,8 @@ class AttendanceSummaryView(generics.ListAPIView):
                 attendees.append({
                     'student': attendee,
                     'phone_check': False,
-                    'card_check': False
+                    'card_check': False,
+                    'course_stats': Course.course_stats_for_student(student=attendee, course=college.course)
                 })
         return attendees
 

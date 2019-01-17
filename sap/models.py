@@ -203,6 +203,18 @@ class Course(models.Model):
     def get_colleges(self):
         return College.objects.filter(course=self)
 
+    @staticmethod
+    def course_stats_for_student(student, course):
+        attendances = Attendance.objects.filter(student=student, college__course=course)
+        present = 0
+        for attendance in attendances:
+            if attendance.phone_check is True and attendance.card_check is True:
+                present += 1
+        return {
+            'total': College.objects.filter(course=course, day__lte=timezone.now()).count(),
+            'present': present
+        }
+
     def __str__(self):
         return self.name
 
