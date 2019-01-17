@@ -50,8 +50,15 @@ class Student(models.Model):
 
     def attend_card(self, college):
         # Marks attendance for the student. The booleans default to False.
-        att = Attendance(student=self, college=college, card_check=True)
-        att.save()
+        if Attendance.objects.filter(student=self, college=college).exists():
+            previous_attendance = Attendance.objects.get(student=self, college=college)
+            if previous_attendance.phone_check and previous_attendance.card_check:
+                return
+            else:
+                previous_attendance.delete()
+        else:
+            att = Attendance(student=self, college=college, card_check=True)
+            att.save()
 
     def check_token_valid(self):
         if self.api_token_valid_till > timezone.now():
