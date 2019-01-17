@@ -51,6 +51,7 @@ function initCalendar() {
                             'title': schedule.course.name,
                             'start': schedule.day + 'T' + schedule.begin_time,
                             'end': schedule.day + 'T' + schedule.end_time,
+                            'url': '{{ BASE_URL_W_TRAILING_SLASH  }}teacherportal/attendance_summary/' + schedule['id'] + '/',
                             'className': 'disabled-event'
                         }
                     }

@@ -2,6 +2,11 @@
     transition: background-color 0.5s linear;
     background-color: #89CFF0 !important;
 }
+
+.fc-content {
+    color: black;
+}
+
 .loader {
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid #3498db; /* Blue */
