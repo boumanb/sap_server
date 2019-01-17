@@ -11,61 +11,64 @@
 
 </div>
 <script>
-var TODAY = moment();
-let schedules;
-$(function() {
-    initCalendar()
-});
+    var TODAY = moment();
+    let schedules;
+    $(function () {
+        initCalendar()
+    });
 
-function isToday(momentDate) {
-    return momentDate.isSame(TODAY, 'd');
-}
+    function isToday(momentDate) {
+        return momentDate.isSame(TODAY, 'd');
+    }
 
-function initCalendar() {
-    $('#calendar').fullCalendar({
-        'weekends': false,
-        'defaultView': {% if today is True %} 'agendaDay' {% else %} 'agendaWeek' {% endif %},
-        'minTime': '08:00:00',
-        'maxTime': '18:00:00',
-        'height': 'auto',
-        'slotLabelFormat': 'HH:mm',
-        'events': function(start, end, timezone, callback) {
-            $.ajax({
-              url: '{{ API_URL }}Schedules/' + {{ user.teacher.id }},
-                beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'token {{ API_TOKEN }}');},
-              success: function(data) {
-                var events = [];
-                schedules = data;
-                for (i = 0; i < schedules.length; i++) {
-                    schedule = schedules[i];
-                    if (isToday(moment(schedule.day))) {
-                        events[i] = {
-                            'title': schedule.course.name,
-                            'start': schedule.day + 'T' + schedule.begin_time,
-                            'end': schedule.day + 'T' + schedule.end_time,
-                            'url': '{{ BASE_URL_W_TRAILING_SLASH  }}teacherportal/attendance_summary/' + schedule['id'] + '/',
-                            'className': 'enabled-event'
+    function initCalendar() {
+        $('#calendar').fullCalendar({
+            'weekends': false,
+            'defaultView': {% if today is True %} 'agendaDay' {% else %} 'agendaWeek' {% endif %},
+            'minTime': '08:00:00',
+            'maxTime': '18:00:00',
+            'height': 'auto',
+            'slotLabelFormat': 'HH:mm',
+            'events': function (start, end, timezone, callback) {
+                $.ajax({
+                    url: '{{ API_URL }}Schedules/' + {{ user.teacher.id }},
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', 'token {{ API_TOKEN }}');
+                    },
+                    success: function (data) {
+                        var events = [];
+                        schedules = data;
+                        for (i = 0; i < schedules.length; i++) {
+                            schedule = schedules[i];
+                            if (isToday(moment(schedule.day))) {
+                                events[i] = {
+                                    'title': schedule.course.name,
+                                    'start': schedule.day + 'T' + schedule.begin_time,
+                                    'end': schedule.day + 'T' + schedule.end_time,
+                                    'url': '{{ BASE_URL_W_TRAILING_SLASH  }}teacherportal/attendance_summary/' + schedule['id'] + '/',
+                                    'className': 'enabled-event'
+                                }
+                            } else {
+                                events[i] = {
+                                    'title': schedule.course.name,
+                                    'start': schedule.day + 'T' + schedule.begin_time,
+                                    'end': schedule.day + 'T' + schedule.end_time,
+                                    'url': '{{ BASE_URL_W_TRAILING_SLASH  }}teacherportal/attendance_summary/' + schedule['id'] + '/',
+                                    'className': 'disabled-event'
+                                }
+                            }
                         }
-                    } else {
-                        events[i] = {
-                            'title': schedule.course.name,
-                            'start': schedule.day + 'T' + schedule.begin_time,
-                            'end': schedule.day + 'T' + schedule.end_time,
-                            'className': 'disabled-event'
-                        }
+                        callback(events);
                     }
+                });
+            },
+            loading: function (isLoading, view) {
+                if (isLoading) {
+                    $('#loader').show();
+                } else {
+                    $('#loader').hide();
                 }
-                callback(events);
-              }
-            });
-        },
-        loading: function(isLoading, view) {
-            if (isLoading) {
-                $('#loader').show();
-            } else {
-                $('#loader').hide();
-            }
-        },
-    })
-}
+            },
+        })
+    }
 </script>

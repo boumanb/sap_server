@@ -14,7 +14,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Are you sure that the student is present?</p>
+                        <p id="modalText"></p>
                     </div>
                     <div class="modal-footer">
                         <button id="modalSave" type="button" class="btn btn-primary">Student present</button>
@@ -23,10 +23,6 @@
                 </div>
             </div>
         </div>
-
-{#        <div class="pb-5">#}
-{#            <input id="SetAttendance" class="btn btn-outline-info" type="submit" value="Set attendance">#}
-{#        </div>#}
         <table class="table table-hover">
             <thead>
             <tr>
@@ -48,8 +44,8 @@
                         <td>{{ attendee.card_check }}</td>
                         <td><i class="fas fa-check"></i></td>
                         <td>
-                            <button type="button" class="btn btn-danger btn-sm attend button-attendance">
-                                Set unpresent
+                            <button type="button" class="btn btn-danger btn-sm attend button-attendance" data-student-name="{{ attendee.student.name }}">
+                                Set not present
                             </button>
                         </td>
                     </tr>
@@ -61,7 +57,7 @@
                         <td>{{ attendee.card_check }}</td>
                         <td><i class="fas fa-times"></i></td>
                         <td>
-                            <button type="button" class="btn btn-success btn-sm attend button-attendance">
+                            <button type="button" class="btn btn-success btn-sm attend button-attendance" data-student-name="{{ attendee.student.name }}">
                                 Set present
                             </button>
                         </td>
@@ -73,14 +69,20 @@
     </div>
 
     <script>
-        $('#SetAttendance').click(function () {
-            $('.attend').toggle();
-        });
-
         $('.attend').click(function (e) {
             studentid = $(this).closest('tr').attr('id');
-            collegeid = {{ collegeid }};
+
+            if ($(this).closest('tr').hasClass('table-success'))  {
+                modalText = 'Are you sure ' + $(this).data('student-name') + 'is not present?';
+                modalButtonText = 'Set not present'
+            } else {
+                modalText = 'Are you sure ' + $(this).data('student-name') + ' is present?';
+                modalButtonText = 'Set present'
+            }
+            $("#modalSave").text(modalButtonText)
+            $("#modalText").text(modalText);
             $('#modalConfirm').modal('show');
+            collegeid = {{ collegeid }};
 
             $('#modalSave').click(function (e) {
                 $.ajax({
