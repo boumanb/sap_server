@@ -81,6 +81,23 @@ def set_student_attendance(request, collegeid, studentid):
         return HttpResponse('Unauthorized', status=401)
 
 
+# Set the student attendance from true to false
+@login_required
+def set_student_attendance(request, collegeid, studentid):
+    user = request.user
+    token = Token.objects.get(user=user)
+
+    # Go to function def check_teacher to check if the teacher is the one that the college is linked to.
+    teacher_check = check_teacher(user, collegeid)
+
+    if teacher_check:
+        set_attendance = requests.put(api_url + 'SetAttendance/' + str(collegeid) + '/' + str(studentid) + '/',
+                                      headers={'Authorization': 'token ' + token.key})
+        return JsonResponse(set_attendance.json())
+    else:
+        return HttpResponse('Unauthorized', status=401)
+
+
 # Checks if the teacher is the one of the current college
 def check_teacher(user, collegeid):
     token = Token.objects.get(user=user)
