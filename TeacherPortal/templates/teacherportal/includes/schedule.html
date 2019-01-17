@@ -35,13 +35,10 @@ function initCalendar() {
                 beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'token {{ API_TOKEN }}');},
               success: function(data) {
                 var events = [];
-
                 schedules = data;
                 for (i = 0; i < schedules.length; i++) {
-                    schedule = schedules[i]
-                    let reference_day = moment(schedule.day);
-                    event_today = isToday(reference_day);
-                    if (event_today) {
+                    schedule = schedules[i];
+                    if (isToday(moment(schedule.day))) {
                         events[i] = {
                             'title': schedule.course.name,
                             'start': schedule.day + 'T' + schedule.begin_time,
