@@ -92,9 +92,12 @@ def set_attendance_student(self, collegeid, studentid):
         student = Student.objects.filter(student_nr=studentid).get()
         college = College.objects.filter(pk=collegeid).get()
         if Attendance.objects.filter(student_id=student.pk, college_id=collegeid).last():
-            attend = Attendance.objects.filter(student_id=student.pk, college_id=collegeid).last()
-            confirm = Attendance(student=student, phone_check=True, card_check=True, college_id=collegeid)
-            serializer = AttendanceSerializer(attend, data=model_to_dict(confirm))
+            attendance = Attendance.objects.filter(student_id=student.pk, college_id=collegeid).last()
+            if attendance.phone_check is True or attendance.card_check is True:
+                updated_attendance = Attendance(student=student, phone_check=False, card_check=False, college_id=collegeid)
+            else:
+                updated_attendance = Attendance(student=student, phone_check=True, card_check=True, college_id=collegeid)
+            serializer = AttendanceSerializer(attendance, data=model_to_dict(updated_attendance))
             window_check = attendance_timewindow_valid(college)
             if window_check:
                 return window_check
