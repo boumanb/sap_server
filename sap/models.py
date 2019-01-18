@@ -203,6 +203,13 @@ class Course(models.Model):
     def get_colleges(self):
         return College.objects.filter(course=self)
 
+    @property
+    def course_stats(self):
+        return {
+            'total': 1,
+            'present': 1
+        }
+
     @staticmethod
     def course_stats_for_student(student, course):
         return {
@@ -264,7 +271,7 @@ class Attendance(models.Model):
         return str(self.__class__) + ": " + str(self.__dict__)
 
     @property
-    def course_stats(self):
+    def student_course_stats(self):
         return {
             'total': College.objects.filter(course=self.college.course, day__lte=timezone.now()).count(),
             'present': Attendance.objects.filter(student=self.student, college__course=self.college.course, phone_check=True, card_check=True).count()

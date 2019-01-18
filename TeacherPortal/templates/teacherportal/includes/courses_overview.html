@@ -1,0 +1,24 @@
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>Course name</th>
+        <th>Started on</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for course in courses %}
+            <tr class="table-info">
+                <td>{{ course.name }}</td>
+                <td>{{ course.created_at }}</td>
+                <td>
+                    <a href="{{ BASE_URL_W_TRAILING_SLASH }}teacherportal/stats/{{ course.id }}" class="float-right">
+                        <button type="button" class="btn btn-success btn-sm attend">
+                            Go to stats
+                        </button>
+                    </a>
+                </td>
+            </tr>
+    {% endfor %}
+    </tbody>
+</table>

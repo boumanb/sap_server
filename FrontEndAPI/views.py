@@ -4,7 +4,7 @@ from rest_framework.views import Response
 from rest_framework import viewsets, generics, status
 from sap.models import Student, College, Course, Teacher, Attendance, Room
 from .serializers import StudentSerializer, CollegeSerializer, CourseSerializer, TeacherSerializer, \
-    AttendanceSerializer, RoomSerializer, ScheduleSerializer
+    AttendanceSerializer, RoomSerializer, ScheduleSerializer, CourseWithStatsSerializer
 from django.forms.models import model_to_dict
 import datetime
 from datetime import timedelta
@@ -26,6 +26,13 @@ class CourseView(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
 
 
+class GetOneCourse(generics.ListAPIView):
+    serializer_class = CourseWithStatsSerializer
+
+    def get_queryset(self):
+        return Course.objects.all()
+
+
 class TeacherView(viewsets.ModelViewSet):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
@@ -45,7 +52,15 @@ class ScheduleView(generics.ListAPIView):
         today_min_5 = datetime.datetime.today() - timedelta(days=5)
         today_plus_30 = datetime.datetime.today() + timedelta(days=180)
         teacher = self.kwargs['userid']
-        return College.objects.filter(teacher_id=teacher, day__gte=today_min_5.strftime("%Y-%m-%d"), day__lte=today_plus_30.strftime("%Y-%m-%d")).order_by('day')
+        return College.objects.filter(teacher_id=teacher, day__gte=today_min_5.strftime("%Y-%m-%d"),
+                                      day__lte=today_plus_30.strftime("%Y-%m-%d")).order_by('day')
+
+
+class TeachersCoursesView(generics.ListAPIView):
+    serializer_class = CourseSerializer
+
+    def get_queryset(self):
+        return Course.objects.filter(teacher=self.kwargs['teacherid'])
 
 
 class AttendanceSummaryView(generics.ListAPIView):
@@ -65,7 +80,7 @@ class AttendanceSummaryView(generics.ListAPIView):
                     'student': attendee,
                     'phone_check': False,
                     'card_check': False,
-                    'course_stats': Course.course_stats_for_student(student=attendee, course=college.course)
+                    'student_course_stats': Course.course_stats_for_student(student=attendee, course=college.course)
                 })
         return attendees
 
@@ -95,9 +110,11 @@ def set_attendance_student(self, collegeid, studentid):
         if Attendance.objects.filter(student_id=student.pk, college_id=collegeid).last():
             attendance = Attendance.objects.filter(student_id=student.pk, college_id=collegeid).last()
             if attendance.phone_check is True or attendance.card_check is True:
-                updated_attendance = Attendance(student=student, phone_check=False, card_check=False, college_id=collegeid)
+                updated_attendance = Attendance(student=student, phone_check=False, card_check=False,
+                                                college_id=collegeid)
             else:
-                updated_attendance = Attendance(student=student, phone_check=True, card_check=True, college_id=collegeid)
+                updated_attendance = Attendance(student=student, phone_check=True, card_check=True,
+                                                college_id=collegeid)
             serializer = AttendanceSerializer(attendance, data=model_to_dict(updated_attendance))
             window_check = attendance_timewindow_valid(college)
             if window_check:

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from rest_framework.authtoken.models import Token
 import requests
@@ -6,13 +6,15 @@ from django.http import JsonResponse, HttpResponse
 import datetime
 
 from sap import settings
+from sap.models import Course
 
 api_url = settings.BASE_URL_W_TRAILING_SLASH + 'api/'
 
 
 def index(request):
-    data = {}
-    return render(request, 'teacherportal/schedule.html', data)
+    if request.user.is_authenticated:
+        return redirect('schedule')
+    return redirect('login')
 
 
 # Index method returns only the colleges on the current day
@@ -81,6 +83,32 @@ def set_student_attendance(request, collegeid, studentid):
         return HttpResponse('Unauthorized', status=401)
 
 
+@login_required
+def stats(request, courseid=None):
+    token = Token.objects.get(user=request.user)
+    if not courseid:
+        courses = requests.get(api_url + 'Teacher/' + str(request.user.teacher.pk) + '/Courses',
+                               headers={'Authorization': 'token ' + token.key}).json()
+        context = {
+            'courses': courses
+        }
+        return render(request, 'teacherportal/courses.overview.html', context)
+    else:
+        if Course.objects.filter(pk=courseid).exists():
+            course = Course.objects.get(pk=courseid)
+            if course.teacher.filter(pk=request.user.teacher.pk).exists():
+                courses = requests.get(api_url + 'Course/' + courseid,
+                                       headers={'Authorization': 'token ' + token.key}).json()
+                context = {
+                    'courses': courses
+                }
+                return render(request, 'teacherportal/courses.overview.html', context)
+            else:
+                return HttpResponse('Unauthorized', status=401)
+        else:
+            return HttpResponse('Course not found', status=404)
+
+
 # Checks if the teacher is the one of the current college
 def check_teacher(user, collegeid):
     token = Token.objects.get(user=user)
@@ -90,6 +118,10 @@ def check_teacher(user, collegeid):
         return True
     else:
         return False
+
+
+def check_teacher_course(user, course_id):
+    pass
 
 
 # return the page number from the URL so this can be used as a HREF in the template
@@ -111,7 +143,3 @@ def handler404(request):
 def handler500(request):
     data = {}
     return render(request, '500.html', data)
-
-
-def stats(request):
-    return None
