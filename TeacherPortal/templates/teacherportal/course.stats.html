@@ -1,8 +1,12 @@
 {% extends "teacherportal/base.html" %}
 {% block content %}
 
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-        <h3>Presentness of course '{{ course_stats.0.name }}'</h3>
+    <div class="row">
+        <div class="col-md-12 text-center pt-3">
+            <h3>Presentness of course '{{ course_stats.0.name }}'</h3>
+            <h5>Total students in this course: {{ course_stats.0.course_stats.total_attendees }}</h5>
+        </div>
     </div>
+
     {% include 'teacherportal/includes/course_stats.html' %}
 {% endblock %}
