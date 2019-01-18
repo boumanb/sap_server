@@ -4,7 +4,6 @@ import json
 import bcrypt
 from django.test import TestCase
 from django.utils import timezone
-
 from sap.models import Student, Device, Room, Course, Teacher, Attendance
 
 
