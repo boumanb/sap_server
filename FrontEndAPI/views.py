@@ -30,7 +30,7 @@ class GetOneCourse(generics.ListAPIView):
     serializer_class = CourseWithStatsSerializer
 
     def get_queryset(self):
-        return Course.objects.all()
+        return Course.objects.filter(pk=self.kwargs['courseid'])
 
 
 class TeacherView(viewsets.ModelViewSet):

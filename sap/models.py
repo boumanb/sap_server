@@ -201,13 +201,20 @@ class Course(models.Model):
                     coll.save()
 
     def get_colleges(self):
-        return College.objects.filter(course=self)
+        return College.objects.filter(course=self).order_by('day')
 
     @property
     def course_stats(self):
+        colleges = []
+        colleges_qs = self.get_colleges()
+        for college in colleges_qs:
+            colleges.append({
+                'x': college.day,
+                'y': college.attendance_set.filter(phone_check=True, card_check=True).count()
+            })
         return {
-            'total': 1,
-            'present': 1
+            'colleges': colleges,
+            'total_attendees': self.attendees.count()
         }
 
     @staticmethod

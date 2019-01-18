@@ -97,12 +97,12 @@ def stats(request, courseid=None):
         if Course.objects.filter(pk=courseid).exists():
             course = Course.objects.get(pk=courseid)
             if course.teacher.filter(pk=request.user.teacher.pk).exists():
-                courses = requests.get(api_url + 'Course/' + courseid,
-                                       headers={'Authorization': 'token ' + token.key}).json()
+                course_stats = requests.get(api_url + 'Course/' + courseid,
+                                            headers={'Authorization': 'token ' + token.key}).json()
                 context = {
-                    'courses': courses
+                    'course_stats': course_stats
                 }
-                return render(request, 'teacherportal/courses.overview.html', context)
+                return render(request, 'teacherportal/course.stats.html', context)
             else:
                 return HttpResponse('Unauthorized', status=401)
         else:

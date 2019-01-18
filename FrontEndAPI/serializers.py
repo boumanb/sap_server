@@ -46,7 +46,7 @@ class CourseWithStatsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'teacher', 'created_at', 'updated_at')
+        fields = ('id', 'name', 'teacher', 'created_at', 'updated_at', 'course_stats')
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
