@@ -37,12 +37,24 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'teacher', 'created_at', 'updated_at')
 
 
+class CourseWithStatsSerializer(serializers.ModelSerializer):
+    teacher = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='id'
+    )
+
+    class Meta:
+        model = Course
+        fields = ('id', 'name', 'teacher', 'created_at', 'updated_at', 'course_stats')
+
+
 class AttendanceSerializer(serializers.ModelSerializer):
     student = StudentSerializer(many=False, read_only=True)
 
     class Meta:
         model = Attendance
-        fields = ('timestamp', 'student', 'college', 'phone_check', 'card_check', 'phone', 'card', 'student_id', 'course_stats')
+        fields = ('timestamp', 'student', 'college', 'phone_check', 'card_check', 'phone', 'card', 'student_id', 'student_course_stats')
 
 
 class TeacherSerializer(serializers.ModelSerializer):

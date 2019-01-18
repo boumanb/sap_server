@@ -44,8 +44,8 @@
                         <td>{{ attendee.phone_check }}</td>
                         <td>{{ attendee.card_check }}</td>
                         <td><i class="fas fa-check"></i></td>
-                        {% if attendee.course_stats %}
-                            <td>{{ attendee.course_stats.present }}/{{ attendee.course_stats.total }}</td>
+                        {% if attendee.student_course_stats %}
+                            <td>{{ attendee.student_course_stats.present }}/{{ attendee.student_course_stats.total }}</td>
                         {% else %}
                             <td><i>No data</i></td>
                         {% endif %}
@@ -62,8 +62,8 @@
                         <td>{{ attendee.phone_check }}</td>
                         <td>{{ attendee.card_check }}</td>
                         <td><i class="fas fa-times"></i></td>
-                        {% if attendee.course_stats %}
-                            <td>{{ attendee.course_stats.present }}/{{ attendee.course_stats.total }}</td>
+                        {% if attendee.student_course_stats %}
+                            <td>{{ attendee.student_course_stats.present }}/{{ attendee.student_course_stats.total }}</td>
                         {% else %}
                             <td><i>No data</i></td>
                         {% endif %}

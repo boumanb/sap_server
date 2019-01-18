@@ -1,0 +1,43 @@
+{% if course_stats.0.course_stats.colleges %}
+    <canvas id="myChart" width="100%" height="50px"></canvas>
+
+    <script>
+        data ={{  course_stats.0.course_stats.colleges|safe }};
+        var ctx = document.getElementById("myChart");
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    label: 'Presentness',
+                    data: data
+                }]
+            },
+            options: {
+                responsive: true,
+                tooltips: {
+                    intersect: false
+                },
+                title:{
+                  display:true,
+                  text:'Course presentness'
+                },
+                bezierCurve: false,
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        ticks: {
+                            autoSkip: true,
+                            maxTicksLimit: 20
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+{% else %}
+    <div class="row">
+        <div class="col-md-12 text-center pt-3">
+            <h5 style="font-style: italic">No data available</h5>
+        </div>
+    </div>
+{% endif %}
