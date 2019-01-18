@@ -205,14 +205,9 @@ class Course(models.Model):
 
     @staticmethod
     def course_stats_for_student(student, course):
-        attendances = Attendance.objects.filter(student=student, college__course=course)
-        present = 0
-        for attendance in attendances:
-            if attendance.phone_check is True and attendance.card_check is True:
-                present += 1
         return {
             'total': College.objects.filter(course=course, day__lte=timezone.now()).count(),
-            'present': present
+            'present': Attendance.objects.filter(student=student, college__course=course, phone_check=True, card_check=True).count()
         }
 
     def __str__(self):
@@ -270,12 +265,7 @@ class Attendance(models.Model):
 
     @property
     def course_stats(self):
-        attendances = Attendance.objects.filter(student=self.student, college__course=self.college.course)
-        present = 0
-        for attendance in attendances:
-            if attendance.phone_check is True and attendance.card_check is True:
-                present += 1
         return {
             'total': College.objects.filter(course=self.college.course, day__lte=timezone.now()).count(),
-            'present': present
+            'present': Attendance.objects.filter(student=self.student, college__course=self.college.course, phone_check=True, card_check=True).count()
         }
