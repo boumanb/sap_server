@@ -12,4 +12,3 @@ sonar-project.properties
 coverage.xml
 cache
 *.log
-static/
