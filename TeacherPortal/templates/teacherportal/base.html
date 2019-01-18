@@ -11,6 +11,7 @@
             crossorigin="anonymous"></script>
 
     <script src="https://unpkg.com/feather-icons"></script>
+
     {% if title %}
         <title>Teacher Portal - {{ title }}</title>
     {% else %}
@@ -26,6 +27,7 @@
             crossorigin="anonymous"></script>
     <script src='{% static 'teacherportal/moment.min.js' %}'></script>
     <script src='{% static 'teacherportal/fullcalendar.min.js' %}'></script>
+    <script src='{% static 'teacherportal/Chart.js' %}'></script>
     <link rel="stylesheet" type="text/css" href="{% static 'teacherportal/teacherportal.css' %}">
     <link rel='stylesheet' type="text/css" href="{% static 'teacherportal/fullcalendar.min.css' %}"/>
 </head>
@@ -80,7 +82,7 @@
         <div class="sidebar-sticky">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'schedule' %}">
+                    <a class="nav-link" href="{% url 'schedule' %}">
                         <span data-feather="home"></span>
                         Schedule <span class="sr-only">(current)</span>
                     </a>
@@ -88,7 +90,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'stats' %}">
                         <span data-feather="bar-chart-2"></span>
-                        Reports
+                        Course stats
                     </a>
                 </li>
             </ul>

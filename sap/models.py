@@ -201,18 +201,27 @@ class Course(models.Model):
                     coll.save()
 
     def get_colleges(self):
-        return College.objects.filter(course=self)
+        return College.objects.filter(course=self).order_by('day')
+
+    @property
+    def course_stats(self):
+        colleges = []
+        colleges_qs = self.get_colleges()
+        for college in colleges_qs:
+            colleges.append({
+                'x': college.day,
+                'y': college.attendance_set.filter(phone_check=True, card_check=True).count()
+            })
+        return {
+            'colleges': colleges,
+            'total_attendees': self.attendees.count()
+        }
 
     @staticmethod
     def course_stats_for_student(student, course):
-        attendances = Attendance.objects.filter(student=student, college__course=course)
-        present = 0
-        for attendance in attendances:
-            if attendance.phone_check is True and attendance.card_check is True:
-                present += 1
         return {
             'total': College.objects.filter(course=course, day__lte=timezone.now()).count(),
-            'present': present
+            'present': Attendance.objects.filter(student=student, college__course=course, phone_check=True, card_check=True).count()
         }
 
     def __str__(self):
@@ -269,13 +278,8 @@ class Attendance(models.Model):
         return str(self.__class__) + ": " + str(self.__dict__)
 
     @property
-    def course_stats(self):
-        attendances = Attendance.objects.filter(student=self.student, college__course=self.college.course)
-        present = 0
-        for attendance in attendances:
-            if attendance.phone_check is True and attendance.card_check is True:
-                present += 1
+    def student_course_stats(self):
         return {
             'total': College.objects.filter(course=self.college.course, day__lte=timezone.now()).count(),
-            'present': present
+            'present': Attendance.objects.filter(student=self.student, college__course=self.college.course, phone_check=True, card_check=True).count()
         }

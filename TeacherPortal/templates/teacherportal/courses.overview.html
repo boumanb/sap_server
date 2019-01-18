@@ -1,0 +1,8 @@
+{% extends "teacherportal/base.html" %}
+{% block content %}
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+        <h3>Courses of {{ user.username }}.</h3>g
+    </div>
+    {% include 'teacherportal/includes/courses_overview.html' %}
+{% endblock %}
