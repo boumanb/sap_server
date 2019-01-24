@@ -107,21 +107,23 @@ def set_attendance_student(self, collegeid, studentid):
         str_date = dt.strftime("%Y-%m-%d")
         student = Student.objects.filter(student_nr=studentid).get()
         college = College.objects.filter(pk=collegeid).get()
+        window_check = attendance_timewindow_valid(college)
+        if window_check:
+            return window_check
         if Attendance.objects.filter(student_id=student.pk, college_id=collegeid).last():
             attendance = Attendance.objects.filter(student_id=student.pk, college_id=collegeid).last()
             if attendance.phone_check is True or attendance.card_check is True:
-                updated_attendance = Attendance(student=student, phone_check=False, card_check=False,
-                                                college_id=collegeid)
+                attendance.delete()
+                context = {"success": "student succesfully saved"}
+                return Response(context, status=status.HTTP_200_OK)
             else:
                 updated_attendance = Attendance(student=student, phone_check=True, card_check=True,
                                                 college_id=collegeid)
-            serializer = AttendanceSerializer(attendance, data=model_to_dict(updated_attendance))
-            window_check = attendance_timewindow_valid(college)
-            if window_check:
-                return window_check
-            check_serializer = check_serializer(serializer)
-            if check_serializer:
-                return check_serializer
+                serializer = AttendanceSerializer(attendance, data=model_to_dict(updated_attendance))
+
+                check_serializer = check_serializer(serializer)
+                if check_serializer:
+                    return check_serializer
             return internal_server_error()
         else:
             confirmed_attendance = Attendance(student=student, phone_check=True, card_check=True, college_id=collegeid)
